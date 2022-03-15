@@ -50,7 +50,7 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
   </style>
 
 </head>
-<body style="width: 850px">
+<body style="width: 950px">
   <div class="wrapper">
     <div class="row">
       <div class="col-md-12">
@@ -102,7 +102,7 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
               <br>
               <br>
               <div class="row">
-                <div class="col-md-6" id="listaSecciones">
+                <div class="col-md-4" id="listaSecciones">
                   <select class="form-control" name="seccion[]">
                     <option disabled selected="selected" value="N">Seleccione una sección...</option>
                     <?php foreach($data as $value){ ?>
@@ -110,12 +110,14 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
                     <?php } ?>
                   </select>
                 </div>
-                <div class="col-md-6" id="listaMetas">
+                <div class="col-md-4" id="listaMetas">
                   <label for="meta" style="font-size: 20px">Meta: </label>
                   <input type="number" name="meta[]" id="meta" placeholder="meta">
                 </div>
-              </div>
+                <div class="col-md-4" id="remover">
               
+                </div>
+              </div>
           </div>
           <br>
           <div class="box-footer text-right">
@@ -216,9 +218,16 @@ $('#cerrar').on('click',function(){
     let meta = '<br><label for="meta" style="font-size: 20px">Meta:&nbsp; </label>' +
     '<input type="number" name="meta[]" id="meta" placeholder="meta">'
 
+    // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
+
     $('#listaSecciones').append(select);
-    $('#listaMetas').append(meta);     
+    $('#listaMetas').append(meta); 
+    // $('#remover').append(remover);    
     
   });
+  $('#remover').on("click",function() {
+                 $(this).parent('div').remove();
+
+        });
 </script>
 </html>
