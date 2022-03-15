@@ -210,17 +210,17 @@ $('#cerrar').on('click',function(){
        '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
        <?php 
           foreach($data as $value){
-            echo '<option value="' .$value['codarea']; '">' . $value['descripcion']; ' . </option>';
+            echo '<option value="' . $value['codarea'] . '">' . $value['descripcion'] . '</option>';
           }
        ?>
     + '</select>'
         
-    let meta = '<br><label for="meta" style="font-size: 20px">Meta: </label>' +
+    let meta = '<label for="meta" style="font-size: 20px">Meta: </label>' +
     '<input type="number" name="meta[]" id="meta" placeholder="meta">'
 
     $('#listaSecciones').append(select);
     $('#listaMetas').append(meta);     
-    
+
   });
 </script>
 </html>
