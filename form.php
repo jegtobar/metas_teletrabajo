@@ -204,13 +204,11 @@ $('#cerrar').on('click',function(){
 </body>
 <script>
   $('#agregar').on('click',function(){
-    
-    
     let select = '<select class="form-control" name="seccion[]">' +
        '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
        <?php 
           foreach($data as $value){
-            echo '<option value="' .$value['codarea']; '">' . $value['descripcion']; ' . </option>';
+            echo '<option value="'.$value['codarea'].'">' . $value['descripcion']; '</option>';
           }
        ?>
     + '</select>'
