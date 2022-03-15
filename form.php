@@ -204,10 +204,23 @@ $('#cerrar').on('click',function(){
 </body>
 <script>
   $('#agregar').on('click',function(){
-    $('#listaSecciones').append('<select class="form-control" name="seccion[]">\
-                    <option disabled selected="selected" value="N">Seleccione una sección...</option>\<?php foreach($data as $value){ ?>\<option value="\<?php echo $value['codarea']; ?>">\<\?php echo $value['descripcion']; ?></option>\<?php } ?></select>');
-    $('#listaMetas').append('<label for="meta" style="font-size: 20px">Meta: </label>\
-                            <input type="number" name="meta[]" id="meta" placeholder="meta">');        
+    
+    
+    let select = '<select class="form-control" name="seccion[]">' +
+       '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
+       <?php 
+          foreach($data as $value){
+            echo '<option value="' .$value['codarea']; '">' . $value['descripcion']; ' . </option>';
+          }
+       ?>
+    + '</select>'
+        
+    let meta = '<br><label for="meta" style="font-size: 20px">Meta: </label>' +
+    '<input type="number" name="meta[]" id="meta" placeholder="meta">'
+
+    $('#listaSecciones').append(select);
+    $('#listaMetas').append(meta);     
+    
   });
 </script>
 </html>
