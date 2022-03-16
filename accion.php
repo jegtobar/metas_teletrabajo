@@ -252,12 +252,11 @@ $vigente = $row['VIGENTE'];
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="vendor/jquery-ui/jquery-ui.min.js"></script>
 <script src="vendor/slimScroll/jquery.slimscroll.min.js"></script>
-<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
 
 <script src="vendor/metisMenu/dist/metisMenu.min.js"></script>
 <script src="vendor/iCheck/icheck.min.js"></script>
 <script src="vendor/sparkline/index.js"></script>
-<script src="dist/jquery.fancybox.min.js"></script>
 <script src="vendor/sweetalert/lib/sweet-alert.min.js"></script>
 <script src="vendor/peity/jquery.peity.min.js"></script>
 
@@ -268,6 +267,7 @@ $vigente = $row['VIGENTE'];
 <script src="vendor/jquery-steps/build/jquery.steps.js"></script>
 <script src="scripts/homer.js"></script>
 <script src="dist/jquery.fancybox.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 
 <!-- Plugins para Datatables -->
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>

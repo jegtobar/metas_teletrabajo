@@ -7,8 +7,11 @@ if (isset($_REQUEST['id_meta'])){
     $query = "SELECT id_meta,
                      nombre,
                      tipo,
+                     modalidad,
                      cantidad,
-                     meta
+                     meta,
+                     poa,
+                     activa
                 FROM mte_metas
                WHERE id_meta = ".$_REQUEST['id_meta'];
         
@@ -21,6 +24,23 @@ if (isset($_REQUEST['id_meta'])){
         $tipo = $row['TIPO'];
         $cantidad = $row['CANTIDAD'];
         $meta = $row['META'];
+        $modalidad = $row['MODALIDAD'];
+        $poa = $row['POA'];
+        $activa = $row['ACTIVA'];
+
+    $query = "SELECT b.ID_META_DETALLE,
+                     a.DESCRIPCION,
+                     b.META
+              FROM MTE_METAS_DETALLE b
+              INNER JOIN rh_areas a on a.CODAREA = b.CODAREA
+              WHERE ID_META =".$id_meta;
+    $stid = oci_parse($conn, $query);
+    oci_execute($stid, OCI_DEFAULT);
+    while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+      $id_detalle[] = $row['ID_META_DETALLE'];
+      $dependencia[] = $row['DESCRIPCION'];
+      $detalle_meta[] = $row['META'];
+    }
 	
 }
 
@@ -69,19 +89,19 @@ if (isset($_REQUEST['id_meta'])){
           <div class="box" style="margin: 0; top-border: 0px">
           <form role="form" method="post" action="actualizar_tarea.php" enctype="multipart/form-data" id="form" autocomplete="off">
            <div class="box-header with-border">
-           	<h3>Ingreso de datos</h3>
+           	<h3>Editar información</h3>
            </div>
 
             <div class="box-body">
               
              <div class="box-body">
-             <label style="font-size: 20px">Id</label>
+             <label style="font-size: 18px">Id</label>
             <input type="text" class="form-control"  name="idMeta" value="<?php if (isset($id_meta)){echo $id_meta;}?>" disabled>
             <br>
-            <label style="font-size: 20px">Nombre</label>
+            <label style="font-size: 18px">Nombre</label>
             <input type="text" class="form-control" placeholder="Nombre de la meta..." name="nombre" value="<?php if (isset($id_meta)){echo $nombre;}?>">
             <br>
-            <label style="font-size: 20px">Modalidad</label>
+            <label style="font-size: 18px">Modalidad</label>
             <select class="form-control" name="modalidad" required>
               <option disabled selected="selected" value="N">Seleccione uno...</option>
               <option value="P" <?php if(isset($id_meta)){if($tipo == 'P'){echo 'selected="selected"';}}?>>Presencial</option>
@@ -92,16 +112,16 @@ if (isset($_REQUEST['id_meta'])){
             <label style="font-size: 20px">Tipo</label>
             <select class="form-control" name="tipo" required>
               <option disabled selected="selected" value="N">Seleccione uno...</option>
-              <option value="R" <?php if(isset($id_meta)){if($tipo == 'R'){echo 'selected="selected"';}}?>>Regular</option>
-              <option value="T" <?php if(isset($id_meta)){if($tipo == 'T'){echo 'selected="selected"';}}?>>Temporal</option>
-              <option value="A" <?php if(isset($id_meta)){if($tipo == 'A'){echo 'selected="selected"';}}?>>Adicional</option>
+              <option value="R" <?php if(isset($id_meta)){if($modalidad == 'R'){echo 'selected="selected"';}}?>>Regular</option>
+              <option value="T" <?php if(isset($id_meta)){if($modalidad == 'T'){echo 'selected="selected"';}}?>>Temporal</option>
+              <option value="A" <?php if(isset($id_meta)){if($modalidad == 'A'){echo 'selected="selected"';}}?>>Adicional</option>
             </select>
             <br>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
                   <label for="poa" style="font-size: 20px">POA</label>
-                  <input type="checkbox" aria-label="poa" value="S">
+                  <input type="checkbox" <?php if(isset($id_meta)){if($poa == '1'){echo 'checked';}}?> aria-label="poa" value="S">
                 </div>
               </div>
             </div>
@@ -110,18 +130,37 @@ if (isset($_REQUEST['id_meta'])){
               <div class="input-group-prepend">
                 <div class="input-group-text">
                   <label for="activa" style="font-size: 20px">Activa</label>
-                  <input type="checkbox" aria-label="activa" value="S">
+                  <input type="checkbox" aria-label="activa" <?php if(isset($id_meta)){if($activa == '1'){echo 'checked';}}?> value="S">
                 </div>
               </div>
             </div>
             <br>
+            <table id="tabla" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Sección</th>
+                  <th>Meta</th>
+                  <th style="width: 10%">Editar</th>
+                  <th style="width: 10%">Eliminar</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $i=0; while ($i < count($id_detalle)){
+                  echo'
+                    <tr>
+                    <td>'.$dependencia[$i].'</td>
+                    <td>'.$detalle_meta[$i].'</td>
+                    <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-pencil"></i></a></td>
+                    <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-trash-o"></i></a></td>';
+                  echo' 
+                    </tr>';
+                      $i++;}
+                ?>
+                    </tbody>
+              </table>
                 
-               <!--  <label style="font-size: 20px">Cantidad</label>
-                <input type="number" class="form-control" name="cantidad" value="<?php if (isset($id_meta)){echo $cantidad;}?>" required>
-                 -->
-                <label style="font-size: 20px">Meta</label>
-                <input type="number" class="form-control" name="meta" value="<?php if (isset($id_meta)){echo $meta;}?>" required>
-                <input type="hidden" name="idMeta" value="<?php echo $id_meta?>">
+
             </div>
                 
 			   

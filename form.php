@@ -102,21 +102,29 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
               <br>
               <br>
               <div class="row">
-                <div class="col-md-4" id="listaSecciones">
-                  <select class="form-control" name="seccion[]">
-                    <option disabled selected="selected" value="N">Seleccione una sección...</option>
-                    <?php foreach($data as $value){ ?>
-                    <option value="<?php echo $value['codarea']?>"><?php echo $value['descripcion']?></option> 
-                    <?php } ?>
-                  </select>
-                </div>
-                <div class="col-md-4" id="listaMetas">
-                  <label for="meta" style="font-size: 20px">Meta: </label>
-                  <input type="number" name="meta[]" id="meta" placeholder="meta">
-                </div>
-                <div class="col-md-4" id="remover">
-              
-                </div>
+                <table id="tabla" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Sección</th>
+                    <th>Meta</th>
+                  </tr>
+                  </thead>
+                  <tbody id="listaSecciones">
+                    <tr>
+                      <td >
+                        <select class="form-control" name="seccion[]">
+                          <option disabled selected="selected" value="N">Seleccione una sección...</option>
+                          <?php foreach($data as $value){ ?>
+                          <option value="<?php echo $value['codarea']?>"><?php echo $value['descripcion']?></option> 
+                          <?php } ?>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="number" name="meta[]" id="meta" placeholder="meta">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
           </div>
           <br>
@@ -206,23 +214,19 @@ $('#cerrar').on('click',function(){
 </body>
 <script>
   $('#agregar').on('click',function(){
-    let select = '<select class="form-control" name="seccion[]">' +
+    let select = '<tr><td><select class="form-control" name="seccion[]">' +
        '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
        <?php 
           foreach($data as $value){
             echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
           }
        ?>
-    + '</select>'
-        
-    let meta = '<br><label for="meta" style="font-size: 20px">Meta:&nbsp; </label>' +
-    '<input type="number" name="meta[]" id="meta" placeholder="meta">'
+    + '</select></td>'+'<td><input type="number" name="meta[]" id="meta" placeholder="meta"></td></tr>'
 
     // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
 
     $('#listaSecciones').append(select);
-    $('#listaMetas').append(meta); 
-    // $('#remover').append(remover);    
+     
     
   });
   $('#remover').on("click",function() {
