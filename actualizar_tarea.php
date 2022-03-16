@@ -2,42 +2,36 @@
 
 include '../auth.php';
 $grabo = 'N';
-
+$idMeta = $_POST['metaId'];
 $nombre = $_POST['nombre'];
 $cantidad = $_POST['cantidad'];
-$meta = $_POST['meta'];
+$modalidad = $_POST['modalidad'];
+$justificacion = $_POST['justificacion'];
 $tipo = $_POST['tipo'];
+$poa = $_POST['poa'];
+$detalle = [];
+$detalle['meta']=$_POST['detalleMetaEdit'];
+$idMetaDetalle=[];
+$idMetaDetalle['id']=$_POST['metaIdDetalle'];
+if(!isset($_POST['estatus'])){
+    $activa=0;
+}else{
+    $activa = $_POST['estatus'];
+}
 
+$meta = 0;
+foreach ($detalle['meta'] as $item) {
+    $meta = $meta + $item;
+}
 
-
-$query = "SELECT id_periodo,
-                 to_char(fecha_inicio,'DD-MM-YYYY') as inicio,
-                 to_char(fecha_fin,'DD-MM-YYYY') as fin
-            FROM mte_periodo
-           WHERE vigente = 'S'";
-
-$stid = oci_parse($conn, $query);
-oci_execute($stid, OCI_DEFAULT);
-$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-$id_periodo = $row['ID_PERIODO'];
-$del = $row['INICIO'];
-$al = $row['FIN'];
-
-
-$query = "SELECT codarea
-            FROM mte_areas
-           WHERE usuarios LIKE '%".$usuario."%'";
-
-$stid = oci_parse($conn, $query);
-oci_execute($stid, OCI_DEFAULT);
-$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-$codarea = $row['CODAREA'];
+if(empty($justificacion)){
+    $justificacion = " ";
+}
 
 
 
 if (isset($_POST['guardarMeta'])){
-
-    $idMeta = $_POST['idMeta'];	   
+   
     $cantidad=0;
   
      $query = "UPDATE MTE_METAS 
@@ -45,20 +39,51 @@ if (isset($_POST['guardarMeta'])){
 		              CANTIDAD = ".$cantidad.",
 		              META = ".$meta.",
                       TIPO = '".$tipo."',
-                      USUARIO = '".$usuario."'
+                      MODALIDAD = '".$modalidad."',
+                      USUARIO = '".$usuario."',
+                      POA = '".$poa."',
+                      ACTIVA = '".$activa."',
+                      JUSTIFICACION = '".$justificacion."'
 		        WHERE id_meta = ".$idMeta;
 
-
+ 
     $stid = oci_parse($conn, $query);          
 	$mensaje = oci_execute($stid, OCI_DEFAULT);
    
-    
+  
     if($mensaje){
         
     	oci_commit($conn);
     	//header('Location: accion.php?grabar=1');
     	$grabo = 'S';
-        echo $grabo;
+        $i=0;
+        foreach ($detalle['meta'] as $item) {
+            $meta = $detalle['meta']{$i};
+            $idMeta = $idMetaDetalle['id']{$i};
+        
+            $query = "UPDATE MTE_METAS_DETALLE
+                  SET META = $meta
+		        WHERE ID_META_DETALLE = ".$idMeta;
+                echo $query;
+
+                $stid = oci_parse($conn, $query);
+                $msj = oci_execute($stid, OCI_DEFAULT);
+                if($msj){
+                    oci_commit($conn);
+                    $i++;
+                }else {
+                        $e = oci_error($stid);
+                        print htmlentities($e['message']);
+                        print "\n<pre>\n";
+                        print htmlentities($e['sqltext']);
+                        printf("\n%".($e['offset']+1)."s", "^");
+                        print  "\n</pre>\n";
+                        
+                        die();
+                        
+                    }
+            }
+
     	
     } else {
         

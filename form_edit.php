@@ -102,15 +102,15 @@ if (isset($_REQUEST['id_meta'])){
             <input type="text" class="form-control" placeholder="Nombre de la meta..." name="nombre" value="<?php if (isset($id_meta)){echo $nombre;}?>">
             <br>
             <label style="font-size: 18px">Modalidad</label>
-            <select class="form-control" name="modalidad" required>
+            <select class="form-control" name="tipo" required>
               <option disabled selected="selected" value="N">Seleccione uno...</option>
               <option value="P" <?php if(isset($id_meta)){if($tipo == 'P'){echo 'selected="selected"';}}?>>Presencial</option>
               <option value="T" <?php if(isset($id_meta)){if($tipo == 'T'){echo 'selected="selected"';}}?>>Teletrabajo</option>
               <option value="M" <?php if(isset($id_meta)){if($tipo == 'M'){echo 'selected="selected"';}}?>>Mixto</option>
             </select>
             <br>
-            <label style="font-size: 20px">Tipo</label>
-            <select class="form-control" name="tipo" required>
+            <label style="font-size: 18px">Tipo</label>
+            <select class="form-control" name="modalidad" required>
               <option disabled selected="selected" value="N">Seleccione uno...</option>
               <option value="R" <?php if(isset($id_meta)){if($modalidad == 'R'){echo 'selected="selected"';}}?>>Regular</option>
               <option value="T" <?php if(isset($id_meta)){if($modalidad == 'T'){echo 'selected="selected"';}}?>>Temporal</option>
@@ -120,8 +120,8 @@ if (isset($_REQUEST['id_meta'])){
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <label for="poa" style="font-size: 20px">POA</label>
-                  <input type="checkbox" <?php if(isset($id_meta)){if($poa == '1'){echo 'checked';}}?> aria-label="poa" value="S">
+                  <label for="poa" style="font-size: 18px">POA</label>
+                  <input type="checkbox" name="poa" <?php if(isset($id_meta)){if($poa == '1'){echo 'checked';}}?> aria-label="poa" value="1">
                 </div>
               </div>
             </div>
@@ -129,8 +129,12 @@ if (isset($_REQUEST['id_meta'])){
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <label for="activa" style="font-size: 20px">Activa</label>
-                  <input type="checkbox" aria-label="activa" <?php if(isset($id_meta)){if($activa == '1'){echo 'checked';}}?> value="S">
+                  <label for="activa" style="font-size: 18px">Activa</label>
+                  <input type="checkbox" name="estatus" id="estatus" aria-label="activa" <?php if(isset($id_meta)){if($activa == '1'){echo 'checked value="1"';}else{echo 'value="0"';}}?> >
+                  <br>
+                  <label for="justificacion" id="labelJustificacion" style="font-size: 18px">Justificación:</label>
+                  <br>
+                  <textarea name="justificacion" id="justificacion" cols="40" rows="3"></textarea>
                 </div>
               </div>
             </div>
@@ -140,8 +144,8 @@ if (isset($_REQUEST['id_meta'])){
                 <tr>
                   <th>Sección</th>
                   <th>Meta</th>
-                  <th style="width: 10%">Editar</th>
                   <th style="width: 10%">Eliminar</th>
+                  
                 </tr>
                 </thead>
                 <tbody>
@@ -150,8 +154,7 @@ if (isset($_REQUEST['id_meta'])){
                   echo'
                     <tr>
                     <td>'.$dependencia[$i].'</td>
-                    <td>'.$detalle_meta[$i].'</td>
-                    <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-pencil"></i></a></td>
+                    <td><input type="text" class="text" value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]"></td>
                     <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-trash-o"></i></a></td>';
                   echo' 
                     </tr>';
@@ -159,19 +162,21 @@ if (isset($_REQUEST['id_meta'])){
                 ?>
                     </tbody>
               </table>
-                
 
-            </div>
-                
-			   
-              
-                            
-            </div>
+            </div>         
+          </div>
             
             <div class="box-footer text-right">
-				<div class="btn btn-default" id="cerrar">Cancelar</div>
-                <button type="submit" class="btn btn-primary" id="guardarMeta" name="guardarMeta">Grabar</button>
+				      <div class="btn btn-default" id="cerrar">Cancelar</div>
                 <input type="hidden" name="cantidad" value="0">
+                <input type="hidden" name="metaId" value="<?php echo $id_meta;?>">
+                <?php 
+                  foreach ($id_detalle as $item) {
+                    echo'<input type="hidden" name="metaIdDetalle[]" value="'.$item.'">';
+                  }
+                ?>
+                <button type="submit" class="btn btn-primary" id="guardarMeta" name="guardarMeta">Grabar</button>
+                
                 
               </div>
 			</form>
@@ -241,8 +246,9 @@ $(function () {
 		        }
 		    })
 		})
+    
 	});
-
+  
 </script>
 <!-- Fin Script y plugins para validacion -->
 
@@ -253,4 +259,18 @@ $('#cerrar').on('click',function(){
 </script>
 
 </body>
+<script>
+  $("#justificacion").hide();
+  $("#labelJustificacion").hide();
+ 
+    $('#estatus').on('change',function(){
+      if (this.checked) {
+      $("#justificacion").hide();
+      $("#labelJustificacion").hide();
+      } else {
+      $("#justificacion").show();
+      $("#labelJustificacion").show();
+      }  
+    })
+</script>
 </html>
