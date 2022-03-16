@@ -7,10 +7,17 @@ $nombre = $_POST['nombre'];
 $modalidad = $_POST['modalidad'];
 $tipo = $_POST['tipo'];
 $cantidad = $_POST['cantidad'];
-$meta = $_POST['meta'];
 $poa = $_POST['poa'];
 $activa = $_POST['activa'];
+$detalle = [];
+$detalle['seccion'] =$_POST['seccion'];
+$detalle['meta'] = $_POST['meta'];
 
+
+$meta = 0;
+foreach ($detalle['meta'] as $item) {
+    $meta = $meta + $item;
+}
 
 
 $query = "SELECT id_periodo,
@@ -34,6 +41,7 @@ $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $codarea = $row['CODAREA'];
+
    
 $query = "INSERT INTO MTE_METAS (ID_META,
                                 CODAREA,
@@ -69,8 +77,56 @@ $mensaje = oci_execute($stid, OCI_DEFAULT);
 if($mensaje){
 
     oci_commit($conn);
-    $grabo = 'S';
-    
+    $grabo='S';
+    $realizado = 0;
+    $i=0;
+    //Detalle meta
+    $query = "SELECT id_meta from mte_metas
+    where rownum<=1
+    order by id_meta desc
+    ";
+    $stid = oci_parse($conn, $query);
+    oci_execute($stid, OCI_DEFAULT);
+    $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+    $idMeta = $row['ID_META'];
+
+    foreach ($detalle['seccion'] as $item) {
+        $meta = $detalle['meta']{$i};
+
+        $query="INSERT INTO MTE_METAS_DETALLE(ID_META_DETALLE,
+                                            ID_META,
+                                            CODAREA,
+                                            META,
+                                            FECHA,
+                                            USUARIO,
+                                            REALIZADO)
+                                            VALUES(MET_DETALLE.NEXTVAL,
+                                                    $idMeta,
+                                                    $item,
+                                                    $meta,
+                                                    SYSDATE,
+                                                    '".$usuario."',
+                                                    ".$realizado."
+                                            )";
+                                    
+        $stid = oci_parse($conn, $query);
+        $msj = oci_execute($stid, OCI_DEFAULT);
+        if($msj){
+            oci_commit($conn);
+            $i++;
+        }else {
+                $e = oci_error($stid);
+                print htmlentities($e['message']);
+                print "\n<pre>\n";
+                print htmlentities($e['sqltext']);
+                printf("\n%".($e['offset']+1)."s", "^");
+                print  "\n</pre>\n";
+                
+                die();
+                
+            }
+    }
+
 } else {
     
     $e = oci_error($stid);
@@ -86,6 +142,7 @@ if($mensaje){
 
 
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>

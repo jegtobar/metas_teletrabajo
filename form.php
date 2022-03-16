@@ -106,7 +106,7 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
                   <select class="form-control" name="seccion[]">
                     <option disabled selected="selected" value="N">Seleccione una sección...</option>
                     <?php foreach($data as $value){ ?>
-                    <option value="<?php echo $value['codarea']; ?>"><?php echo $value['descripcion']; ?></option> 
+                    <option value="<?php echo $value['codarea']?>"><?php echo $value['descripcion']?></option> 
                     <?php } ?>
                   </select>
                 </div>
@@ -210,7 +210,7 @@ $('#cerrar').on('click',function(){
        '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
        <?php 
           foreach($data as $value){
-            echo "'".'<option value="'.$value['codarea'].'">."' . $value['descripcion']. '</option>'."'";
+            echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
           }
        ?>
     + '</select>'
