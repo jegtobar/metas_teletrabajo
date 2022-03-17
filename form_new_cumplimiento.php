@@ -157,7 +157,7 @@ if (isset($_REQUEST['id_meta'])){
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <label for="activa" style="font-size: 18px">Cumplimiento global</label>
+                  <label for="activa" style="font-size: 18px">Cumplimiento</label>
                   <input type="text" class="form-control" disabled name="cumplimiento" value="<?php if (isset($id_meta)){echo $cantidad;}?>">
                   <br>
                 </div>
@@ -169,8 +169,8 @@ if (isset($_REQUEST['id_meta'])){
                 <tr>
                   <th>Sección</th>
                   <th>Meta</th>
-                  <th>Cumplimiento</th>
-                  <th>Ingresar</th>                 
+                  <th>Realizado</th>
+                  <th>Cumplimiento</th>                 
                 </tr>
                 </thead>
                 <tbody>

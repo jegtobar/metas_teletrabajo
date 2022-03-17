@@ -196,6 +196,9 @@ $vigente = $row['VIGENTE'];
                  	<label style="color: white">ver</label>
                  	<button type="submit" class="btn btn-primary">Ver datos</button>
                  </div>
+                 <div class="box-footer">
+                  <a class="btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
+                 </div>
 
 				</form>              
              </div>

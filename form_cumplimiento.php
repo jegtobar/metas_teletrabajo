@@ -31,7 +31,6 @@ if ($_REQUEST['id_cumplimiento'] > 0){
     
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
-    
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $id_meta = $row['ID_META'];
     $nombre = $row['NOMBRE'];
