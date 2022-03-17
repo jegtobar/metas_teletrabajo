@@ -74,20 +74,13 @@ oci_execute($stid, OCI_DEFAULT);
 while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
     $id_meta[] = $row['ID_META'];
     $nombre[] = $row['NOMBRE'];
-    $tipos[] = $row['TIPO'];
-    $poa[] = $row['POA'];
-    $activa[] = $row['ACTIVA'];
-    $modalidad[] = $row['MODALIDAD'];
+    $poa[]=$row['POA'];
+    $activa[]=$row['ACTIVA'];
+    $modalidad[]=$row['MODALIDAD'];
     if($row['TIPO'] == 'T'){$tipo[] = 'Teletrabajo';}
     if($row['TIPO'] == 'P'){$tipo[] = 'Presencial';}
     if($row['TIPO'] == 'M'){$tipo[] = 'Mixto';}
-    if($row['POA'] == '1'){$poa[] = 'Si';}
-    if($row['POA'] == '0'){$poa[] = 'No';}
-    if($row['ACTIVA'] == '1'){$activa[] = 'Si';}
-    if($row['ACTIVA'] == '0'){$activa[] = 'No';}
-    if($row['MODALIDAD'] == 'R'){$modalidad[] = 'Regular';}
-    if($row['MODALIDAD'] == 'T'){$modalidad[] = 'Temporal';}
-    if($row['MODALIDAD'] == 'A'){$modalidad[] = 'Adicional';}
+    
     $cantidad[] = $row['CANTIDAD'];
     $meta[] = $row['META'];
 }
@@ -224,8 +217,8 @@ $vigente = $row['VIGENTE'];
                   <th>POA</th>
                   <th>Activa</th>
                   <th>Meta</th>
-                  <!-- <th>Realizado</th>
-                  <th style="width: 10%">Detalle</th> -->
+                  <!-- <th>Realizado</th>-->
+                  <th style="width: 10%">Detalle</th>
                   <?php if ($vigente == 'S'){?>
                   <th style="width: 10%">Editar</th>
                   <th style="width: 10%">Eliminar</th>
@@ -235,6 +228,11 @@ $vigente = $row['VIGENTE'];
                 <tbody>
             <?php
             $i=0; while ($i < count($id_meta)){
+              if($poa[$i] == 1){$poa[$i]  = 'Si';}else{$poa[$i]  = 'No';}
+              if($activa[$i] == 1){$activa[$i] = 'Si';}else{$activa[$i] = 'No';}
+              if($modalidad[$i] == 'R'){$modalidad[$i] = 'Regular';}
+              if($modalidad[$i] == 'T'){$modalidad[$i] = 'Temporal';}
+              if($modalidad[$i] == 'A'){$modalidad[$i] = 'Adicional';}
                echo'
                 <tr>
                   <td>'.$nombre[$i].'</td>
@@ -247,6 +245,7 @@ $vigente = $row['VIGENTE'];
                  ';
                if ($vigente == 'S'){
                echo'
+               <td><a class="fancy btn btn-default" href="form_new_cumplimiento.php?id_meta='.$id_meta[$i].'"><i class="fa fa-info"></i></a></td>
            		 <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_meta[$i].'"><i class="fa fa-pencil"></i></a></td>
   		         <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_meta[$i].'"><i class="fa fa-trash-o"></i></a></td>';
                }

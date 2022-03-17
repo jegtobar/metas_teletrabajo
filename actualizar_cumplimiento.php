@@ -3,55 +3,37 @@
 include '../auth.php';
 $grabo = 'N';
 $idMeta = $_POST['metaId'];
-$nombre = $_POST['nombre'];
-// $cantidad = $_POST['cantidad'];
-$modalidad = $_POST['modalidad'];
-$justificacion = $_POST['justificacion'];
-$tipo = $_POST['tipo'];
-$poa = $_POST['poa'];
 $detalle = [];
-$detalle['meta']=$_POST['detalleMetaEdit'];
+$detalle['meta']=$_POST['metaIdDetalle'];
+$cumplimiento = [];
+$cumplimiento['cumplimiento']=$_POST['ingresarCumplimiento'];
 
-
-if(!isset($_POST['estatus'])){
-    $activa=0;
-}else{
-    $activa = $_POST['estatus'];
+$cumplimientoDetalle = 0;
+foreach ($cumplimiento['cumplimiento'] as $item) {
+    $cumplimientoDetalle = $cumplimientoDetalle + (int)$item;
 }
 
 
-$meta = 0;
-foreach ($detalle['meta'] as $item) {
-    $meta = $meta + (int)$item;
-    
-}
+if (isset($_POST['guardarCumplimiento'])){
 
+    $query = "SELECT CANTIDAD 
+			FROM MTE_METAS
+			WHERE ID_META = ".$idMeta;
+			$stid = oci_parse($conn, $query);
+			oci_execute($stid, OCI_DEFAULT);
+			$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+			$cantidadGlobal = $row['CANTIDAD'];
 
-if(empty($justificacion)){
-    $justificacion = " ";
-}
-
-
-
-if (isset($_POST['guardarMeta'])){
-   
-  
-     $query = "UPDATE MTE_METAS 
-                  SET NOMBRE = '".$nombre."',
-		              META = ".$meta.",
-                      TIPO = '".$tipo."',
-                      MODALIDAD = '".$modalidad."',
-                      USUARIO = '".$usuario."',
-                      POA = '".$poa."',
-                      ACTIVA = '".$activa."',
-                      JUSTIFICACION = '".$justificacion."'
-		        WHERE id_meta = ".$idMeta;
+            $cumpGlobal = 0;
+            $cumpGlobal = $cumplimientoDetalle + (int)$cantidadGlobal;
 
  
+     $query = "UPDATE MTE_METAS 
+                  SET CANTIDAD = ".$cumpGlobal."
+		        WHERE id_meta = ".$idMeta;
+}
     $stid = oci_parse($conn, $query);          
 	$mensaje = oci_execute($stid, OCI_DEFAULT);
-   
-  
     if($mensaje){
         
     	oci_commit($conn);
@@ -62,11 +44,11 @@ if (isset($_POST['guardarMeta'])){
         $i=0;
 
         foreach ($idMetaDetalle['id'] as $item) {
-            $meta = $detalle['meta']{$i};
+            $realizado = $cumplimiento['cumplimiento']{$i};
             $idMeta = $item;
         
             $query = "UPDATE MTE_METAS_DETALLE
-                  SET META = $meta
+                  SET REALIZADO = (SELECT (realizado +".$realizado." ) from MTE_METAS_DETALLE where ID_META_DETALLE =".$idMeta.")
 		        WHERE ID_META_DETALLE = ".$idMeta;
                 $stid = oci_parse($conn, $query);
                 $msj = oci_execute($stid, OCI_DEFAULT);
@@ -99,81 +81,6 @@ if (isset($_POST['guardarMeta'])){
     	die();
     	
     }
-}
-
-
-if (isset($_POST['guardarMetaDetalle'])){
-    $realizado = 0;
-    $i=0;
-    $detalleMeta = [];
-    $detalleMeta['seccion'] =$_POST['seccionDetalle'];
-    $detalleMeta['meta'] = $_POST['detalleMetaEdit'];
-    $meta = 0;
-    foreach ($detalleMeta['meta'] as $item) {
-        $meta = $meta + $item;
-    }
-
-    $cantidad=0;
-     $query = "UPDATE MTE_METAS 
-                  SET NOMBRE = '".$nombre."',
-		              CANTIDAD = ".$cantidad.",
-		              META = ".$meta.",
-                      TIPO = '".$tipo."',
-                      MODALIDAD = '".$modalidad."',
-                      USUARIO = '".$usuario."',
-                      POA = '".$poa."',
-                      ACTIVA = '".$activa."',
-                      JUSTIFICACION = '".$justificacion."'
-		        WHERE id_meta = ".$idMeta;
-    
-                  
-    $stid = oci_parse($conn, $query);          
-	$mensaje = oci_execute($stid, OCI_DEFAULT);
-   
-  
-    if($mensaje){
-    	oci_commit($conn);
-        $grabo = 'S';
-        foreach ($detalleMeta['seccion'] as $item) {
-            $meta = $detalleMeta['meta']{$i};
-    
-            $query="INSERT INTO MTE_METAS_DETALLE(ID_META_DETALLE,
-                                                ID_META,
-                                                CODAREA,
-                                                META,
-                                                FECHA,
-                                                USUARIO,
-                                                REALIZADO)
-                                                VALUES(MET_DETALLE.NEXTVAL,
-                                                        $idMeta,
-                                                        $item,
-                                                        $meta,
-                                                        SYSDATE,
-                                                        '".$usuario."',
-                                                        ".$realizado."
-                                                )";
-                                     
-            $stid = oci_parse($conn, $query);
-            $msj = oci_execute($stid, OCI_DEFAULT);
-            if($msj){
-                oci_commit($conn);
-                $i++;
-            }else {
-                    $e = oci_error($stid);
-                    print htmlentities($e['message']);
-                    print "\n<pre>\n";
-                    print htmlentities($e['sqltext']);
-                    printf("\n%".($e['offset']+1)."s", "^");
-                    print  "\n</pre>\n";
-                    
-                    die();
-                    
-                }
-    }
-}
-}
-
-
 
 ?>
 <!DOCTYPE html>
@@ -280,3 +187,4 @@ $( document ).ready(function() {
 <?php }?>
 </body>
 </html>
+
