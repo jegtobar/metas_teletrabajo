@@ -41,6 +41,22 @@ if (isset($_REQUEST['id_meta'])){
       $dependencia[] = $row['DESCRIPCION'];
       $detalle_meta[] = $row['META'];
     }
+
+    if(empty($id_detalle)){
+      $inDetalle = 'S';
+      $query ="SELECT codarea,descripcion
+      FROM RH_AREAS
+      WHERE CODAREA IN(SELECT CODAREA FROM RH_EMPLEADOS WHERE DEPENDE='".$nit."')";
+      $stid = oci_parse($conn, $query);
+      oci_execute($stid, OCI_DEFAULT);
+      $data=[];
+      while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+        $arreglo=[];
+        $arreglo['codarea'] = $row['CODAREA'];
+        $arreglo['descripcion'] = $row['DESCRIPCION'];
+        $data[]=$arreglo;
+}
+    }
 	
 }
 
@@ -130,7 +146,7 @@ if (isset($_REQUEST['id_meta'])){
               <div class="input-group-prepend">
                 <div class="input-group-text">
                   <label for="activa" style="font-size: 18px">Activa</label>
-                  <input type="checkbox" name="estatus" id="estatus" aria-label="activa" <?php if(isset($id_meta)){if($activa == '1'){echo 'checked value="1"';}else{echo 'value="0"';}}?> >
+                  <input type="checkbox" name="estatus" id="estatus" aria-label="estatus" <?php if(isset($id_meta)){if($activa == '1'){echo 'checked value="1"';}}?> value="1" >
                   <br>
                   <label for="justificacion" id="labelJustificacion" style="font-size: 18px">Justificación:</label>
                   <br>
@@ -150,18 +166,45 @@ if (isset($_REQUEST['id_meta'])){
                 </thead>
                 <tbody>
                 <?php
+                if(!empty($id_detalle)){
                 $i=0; while ($i < count($id_detalle)){
                   echo'
                     <tr>
                     <td>'.$dependencia[$i].'</td>
                     <td><input type="text" class="text" value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]"></td>
-                    <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-trash-o"></i></a></td>';
+                    <td><a class="fancy btn btn-danger" href="accion_borrar_detalle.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-trash-o"></i></a></td>';
                   echo' 
                     </tr>';
                       $i++;}
+                }
                 ?>
                     </tbody>
               </table>
+              <!-- En caso de no existir detalle de la meta se mostrará la siguiente tabla -->
+              <button type="button" class="btn btn-primary" id="agregar">Agregar Tarea</button>
+              <table id="tablaDetalle" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Sección</th>
+                    <th>Meta</th>
+                  </tr>
+                  </thead>
+                  <tbody id="listaSecciones">
+                    <tr>
+                      <td >
+                        <select class="form-control" name="seccionDetalle[]">
+                          <option disabled selected="selected" value="N">Seleccione una sección...</option>
+                          <?php foreach($data as $value){ ?>
+                          <option value="<?php echo $value['codarea']?>"><?php echo $value['descripcion']?></option> 
+                          <?php } ?>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="number" name="detalleMetaEdit[]" id="detalleMetaEdit" placeholder="meta">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
             </div>         
           </div>
@@ -171,11 +214,14 @@ if (isset($_REQUEST['id_meta'])){
                 <input type="hidden" name="cantidad" value="0">
                 <input type="hidden" name="metaId" value="<?php echo $id_meta;?>">
                 <?php 
+                if(!empty($id_detalle)){
                   foreach ($id_detalle as $item) {
                     echo'<input type="hidden" name="metaIdDetalle[]" value="'.$item.'">';
                   }
+                }
                 ?>
                 <button type="submit" class="btn btn-primary" id="guardarMeta" name="guardarMeta">Grabar</button>
+                <button type="submit" class="btn btn-primary" id="guardarMetaDetalle" name="guardarMetaDetalle">Grabar</button>
                 
                 
               </div>
@@ -262,6 +308,9 @@ $('#cerrar').on('click',function(){
 <script>
   $("#justificacion").hide();
   $("#labelJustificacion").hide();
+  $('#tablaDetalle').hide();
+  $('#agregar').hide();
+  $('#guardarMetaDetalle').hide();
  
     $('#estatus').on('change',function(){
       if (this.checked) {
@@ -273,4 +322,29 @@ $('#cerrar').on('click',function(){
       }  
     })
 </script>
+<?php if (isset($inDetalle)){?>
+<script>
+$('#agregar').show();
+$('#tablaDetalle').show();
+$('#guardarMetaDetalle').show();
+$('#tabla').hide();
+$('#guardarMeta').hide();
+$('#agregar').on('click',function(){
+    let select = '<tr><td><select class="form-control" name="seccionDetalle[]">' +
+       '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
+       <?php 
+          foreach($data as $value){
+            echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
+          }
+       ?>
+    + '</select></td>'+'<td><input type="number" name="detalleMetaEdit[]" id="meta" placeholder="meta"></td></tr>'
+
+    // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
+
+    $('#listaSecciones').append(select);
+     
+    
+  });
+</script>
+<?php }?>
 </html>

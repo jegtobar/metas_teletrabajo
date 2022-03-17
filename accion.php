@@ -51,7 +51,10 @@ $query = "SELECT a.id_meta,
                  a.nombre, 
                  a.tipo,
                  NVL(SUM(b.cantidad),0) AS cantidad,
-                 a.meta
+                 a.meta,
+                 a.poa,
+                 a.activa,
+                 a.modalidad
             FROM mte_metas a
             LEFT JOIN mte_cumplimientos b ON a.id_meta = b.id_meta
            WHERE a.codarea = ".$codarea."
@@ -59,7 +62,10 @@ $query = "SELECT a.id_meta,
            GROUP BY a.id_meta,
                  a.nombre,
                  a.tipo,
-                 a.meta
+                 a.meta,
+                 a.poa,
+                 a.activa,
+                 a.modalidad
         ORDER BY id_meta DESC";
 
 $stid = oci_parse($conn, $query);
@@ -69,9 +75,19 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
     $id_meta[] = $row['ID_META'];
     $nombre[] = $row['NOMBRE'];
     $tipos[] = $row['TIPO'];
+    $poa[] = $row['POA'];
+    $activa[] = $row['ACTIVA'];
+    $modalidad[] = $row['MODALIDAD'];
     if($row['TIPO'] == 'T'){$tipo[] = 'Teletrabajo';}
     if($row['TIPO'] == 'P'){$tipo[] = 'Presencial';}
     if($row['TIPO'] == 'M'){$tipo[] = 'Mixto';}
+    if($row['POA'] == '1'){$poa[] = 'Si';}
+    if($row['POA'] == '0'){$poa[] = 'No';}
+    if($row['ACTIVA'] == '1'){$activa[] = 'Si';}
+    if($row['ACTIVA'] == '0'){$activa[] = 'No';}
+    if($row['MODALIDAD'] == 'R'){$modalidad[] = 'Regular';}
+    if($row['MODALIDAD'] == 'T'){$modalidad[] = 'Temporal';}
+    if($row['MODALIDAD'] == 'A'){$modalidad[] = 'Adicional';}
     $cantidad[] = $row['CANTIDAD'];
     $meta[] = $row['META'];
 }
@@ -203,10 +219,13 @@ $vigente = $row['VIGENTE'];
                 <thead>
                 <tr>
                   <th>Nombre</th>
+                  <th>Modalidad</th>
                   <th>Tipo</th>
+                  <th>POA</th>
+                  <th>Activa</th>
                   <th>Meta</th>
-                  <th>Realizado</th>
-                  <th style="width: 10%">Detalle</th>
+                  <!-- <th>Realizado</th>
+                  <th style="width: 10%">Detalle</th> -->
                   <?php if ($vigente == 'S'){?>
                   <th style="width: 10%">Editar</th>
                   <th style="width: 10%">Eliminar</th>
@@ -218,11 +237,14 @@ $vigente = $row['VIGENTE'];
             $i=0; while ($i < count($id_meta)){
                echo'
                 <tr>
-                 <td>'.$nombre[$i].'</td>
-           		 <td>'.$tipo[$i].'</td>
-                 <td>'.$meta[$i].'</td>
-                 <td><b>'.$cantidad[$i].'</b></td>
-                 <td><a class="fancy btn btn-info" href="detalle.php?id_meta='.$id_meta[$i].'"><i class="fa fa-info"></i></a></td>';
+                  <td>'.$nombre[$i].'</td>
+           		    <td>'.$tipo[$i].'</td>
+                  <td>'.$modalidad[$i].'</td>
+                  <td>'.$poa[$i].'</td>
+                  <td>'.$activa[$i].'</td>
+                  <td>'.$meta[$i].'</td>
+                  
+                 ';
                if ($vigente == 'S'){
                echo'
            		 <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_meta[$i].'"><i class="fa fa-pencil"></i></a></td>
