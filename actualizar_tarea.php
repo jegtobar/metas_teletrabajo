@@ -2,13 +2,12 @@
 
 include '../auth.php';
 $grabo = 'N';
-$idMeta = $_POST['metaId'];
+$idMetaPadre = $_POST['metaId'];
 $nombre = $_POST['nombre'];
 // $cantidad = $_POST['cantidad'];
 $modalidad = $_POST['modalidad'];
 $justificacion = $_POST['justificacion'];
 $tipo = $_POST['tipo'];
-$poa = $_POST['poa'];
 $detalle = [];
 $detalle['meta']=$_POST['detalleMetaEdit'];
 
@@ -17,6 +16,12 @@ if(!isset($_POST['estatus'])){
     $activa=0;
 }else{
     $activa = $_POST['estatus'];
+}
+
+if(!isset($_POST['poa'])){
+    $poa=0;
+}else{
+    $poa = $_POST['poa'];
 }
 
 
@@ -45,7 +50,7 @@ if (isset($_POST['guardarMeta'])){
                       POA = '".$poa."',
                       ACTIVA = '".$activa."',
                       JUSTIFICACION = '".$justificacion."'
-		        WHERE id_meta = ".$idMeta;
+		        WHERE id_meta = ".$idMetaPadre;
 
  
     $stid = oci_parse($conn, $query);          
@@ -102,29 +107,40 @@ if (isset($_POST['guardarMeta'])){
 }
 
 
-if (isset($_POST['guardarMetaDetalle'])){
+if (isset($_POST['seccionDetalleNew'])){
     $realizado = 0;
     $i=0;
     $detalleMeta = [];
-    $detalleMeta['seccion'] =$_POST['seccionDetalle'];
-    $detalleMeta['meta'] = $_POST['detalleMetaEdit'];
+    $detalleMeta['seccion'] =$_POST['seccionDetalleNew'];
+    $detalleMeta['meta'] = $_POST['detalleMetaEditNew'];
+
     $meta = 0;
     foreach ($detalleMeta['meta'] as $item) {
         $meta = $meta + $item;
     }
 
+    $query = "SELECT  META 
+                FROM  MTE_METAS
+                WHERE id_meta = ".$idMetaPadre;
+    $stid = oci_parse($conn, $query);
+    oci_execute($stid, OCI_DEFAULT);
+    $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+    $metaActual = $row['META'];
+    $nuevaMeta = $metaActual + $meta;
+    echo $nuevaMeta;
+
     $cantidad=0;
      $query = "UPDATE MTE_METAS 
                   SET NOMBRE = '".$nombre."',
 		              CANTIDAD = ".$cantidad.",
-		              META = ".$meta.",
+		              META = ".$nuevaMeta.",
                       TIPO = '".$tipo."',
                       MODALIDAD = '".$modalidad."',
                       USUARIO = '".$usuario."',
                       POA = '".$poa."',
                       ACTIVA = '".$activa."',
                       JUSTIFICACION = '".$justificacion."'
-		        WHERE id_meta = ".$idMeta;
+		        WHERE id_meta = ".$idMetaPadre;
     
                   
     $stid = oci_parse($conn, $query);          
@@ -137,15 +153,15 @@ if (isset($_POST['guardarMetaDetalle'])){
         foreach ($detalleMeta['seccion'] as $item) {
             $meta = $detalleMeta['meta']{$i};
     
-            $query="INSERT INTO MTE_METAS_DETALLE(ID_META_DETALLE,
+            $query="INSERT INTO MTE_METAS_DETALLE(
                                                 ID_META,
                                                 CODAREA,
                                                 META,
                                                 FECHA,
                                                 USUARIO,
                                                 REALIZADO)
-                                                VALUES(MET_DETALLE.NEXTVAL,
-                                                        $idMeta,
+                                                VALUES(
+                                                        $idMetaPadre,
                                                         $item,
                                                         $meta,
                                                         SYSDATE,
@@ -173,9 +189,8 @@ if (isset($_POST['guardarMetaDetalle'])){
 }
 }
 
-
-
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>

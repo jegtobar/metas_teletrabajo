@@ -93,15 +93,13 @@ if($mensaje){
     foreach ($detalle['seccion'] as $item) {
         $meta = $detalle['meta']{$i};
 
-        $query="INSERT INTO MTE_METAS_DETALLE(ID_META_DETALLE,
-                                            ID_META,
+        $query="INSERT INTO MTE_METAS_DETALLE(ID_META,
                                             CODAREA,
                                             META,
                                             FECHA,
                                             USUARIO,
                                             REALIZADO)
-                                            VALUES(MET_DETALLE.NEXTVAL,
-                                                    $idMeta,
+                                            VALUES($idMeta,
                                                     $item,
                                                     $meta,
                                                     SYSDATE,

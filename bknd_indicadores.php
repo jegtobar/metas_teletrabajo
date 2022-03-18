@@ -53,7 +53,7 @@ $idPeriodo = $row['ID_PERIODO'];
 /*Indicador Rendimiento Semanal*/
 $query = "SELECT SUM(a.meta)AS METATOTAL
 FROM mte_metas a
-WHERE a.codarea = ".$codarea."
+WHERE a.activa=1 and a.codarea = ".$codarea."
      AND a.id_periodo = ".$idPeriodo;
 
 $stid = oci_parse($conn, $query);
@@ -71,11 +71,11 @@ oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $realizadoTotal = $row['REALIZADO'];
 
-$rendSemanal = bcdiv($realizadoTotal, $metaTotal, 3)*100;
+$rendSemanal = ($realizadoTotal/$metaTotal)*100;
 
-if ($rendSemanal<50){
+if ($rendSemanal<=50){
 $rendimientoSemanal = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
-}else if($rendSemanal>=50 && $rendSemanal<=70){
+}else if($rendSemanal>50 && $rendSemanal<=70){
 $rendimientoSemanal = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
 }else{
 $rendimientoSemanal = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
@@ -107,11 +107,11 @@ oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $realizadoPoa = $row['REALIZADO'];
 
-$rendPoaSemanal = bcdiv($realizadoPoa, $metaPoa, 3)*100;
+$rendPoaSemanal = ($realizadoPoa/$metaPoa)*100;
 
-if ($rendPoaSemanal<50){
+if ($rendPoaSemanal<=50){
 $rendimientoPoa = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
-}else if($rendPoaSemanal>=50 && $rendPoaSemanal<=70){
+}else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
 $rendimientoPoa = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
 }else{
 $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
@@ -126,7 +126,7 @@ $query = "SELECT META, REALIZADO, T1.CODAREA, T2.DESCRIPCION
             LEFT JOIN RH_AREAS T2
             ON T1.CODAREA = T2.CODAREA
             where ID_META in 
-            (select ID_META from MTE_METAS  where codarea = ".$codarea." and id_periodo = ".$idPeriodo.")";
+            (select ID_META from MTE_METAS  where activa=1 and codarea = ".$codarea." and id_periodo = ".$idPeriodo.")";
 $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
 
@@ -140,7 +140,7 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
 
 foreach ($secciones as &$seccion) {
 
-    $cumplimientoDetalle = bcdiv($seccion["REALIZADO"], $seccion["META"], 3)*100;
+    $cumplimientoDetalle = ($seccion["REALIZADO"]/$seccion["META"])*100;
 
     // $div = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
     $seccion['cumplimientop']= $cumplimientoDetalle;

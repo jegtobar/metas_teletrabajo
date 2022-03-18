@@ -42,7 +42,7 @@ if (isset($_REQUEST['id_meta'])){
       $detalle_meta[] = $row['META'];
     }
 
-    if(empty($id_detalle)){
+   
       $inDetalle = 'S';
       $query ="SELECT codarea,descripcion
       FROM RH_AREAS
@@ -55,8 +55,8 @@ if (isset($_REQUEST['id_meta'])){
         $arreglo['codarea'] = $row['CODAREA'];
         $arreglo['descripcion'] = $row['DESCRIPCION'];
         $data[]=$arreglo;
-}
-    }
+        }
+    
 	
 }
 
@@ -180,6 +180,7 @@ if (isset($_REQUEST['id_meta'])){
                 ?>
                     </tbody>
               </table>
+              <br>
               <!-- En caso de no existir detalle de la meta se mostrará la siguiente tabla -->
               <button type="button" class="btn btn-primary" id="agregar">Agregar Tarea</button>
               <table id="tablaDetalle" class="table table-bordered table-striped">
@@ -192,7 +193,7 @@ if (isset($_REQUEST['id_meta'])){
                   <tbody id="listaSecciones">
                     <tr>
                       <td >
-                        <select class="form-control" name="seccionDetalle[]">
+                        <select class="form-control" name="seccionDetalleNew[]">
                           <option disabled selected="selected" value="N">Seleccione una sección...</option>
                           <?php foreach($data as $value){ ?>
                           <option value="<?php echo $value['codarea']?>"><?php echo $value['descripcion']?></option> 
@@ -200,7 +201,7 @@ if (isset($_REQUEST['id_meta'])){
                         </select>
                       </td>
                       <td>
-                        <input type="number" name="detalleMetaEdit[]" id="detalleMetaEdit" placeholder="meta">
+                        <input type="number" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta">
                       </td>
                     </tr>
                   </tbody>
@@ -221,7 +222,7 @@ if (isset($_REQUEST['id_meta'])){
                 }
                 ?>
                 <button type="submit" class="btn btn-primary" id="guardarMeta" name="guardarMeta">Grabar</button>
-                <button type="submit" class="btn btn-primary" id="guardarMetaDetalle" name="guardarMetaDetalle">Grabar</button>
+
                 
                 
               </div>
@@ -308,10 +309,6 @@ $('#cerrar').on('click',function(){
 <script>
   $("#justificacion").hide();
   $("#labelJustificacion").hide();
-  $('#tablaDetalle').hide();
-  $('#agregar').hide();
-  $('#guardarMetaDetalle').hide();
- 
     $('#estatus').on('change',function(){
       if (this.checked) {
       $("#justificacion").hide();
@@ -324,20 +321,16 @@ $('#cerrar').on('click',function(){
 </script>
 <?php if (isset($inDetalle)){?>
 <script>
-$('#agregar').show();
-$('#tablaDetalle').show();
-$('#guardarMetaDetalle').show();
-$('#tabla').hide();
-$('#guardarMeta').hide();
+
 $('#agregar').on('click',function(){
-    let select = '<tr><td><select class="form-control" name="seccionDetalle[]">' +
+    let select = '<tr><td><select class="form-control" name="seccionDetalleNew[]">' +
        '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
        <?php 
           foreach($data as $value){
             echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
           }
        ?>
-    + '</select></td>'+'<td><input type="number" name="detalleMetaEdit[]" id="meta" placeholder="meta"></td></tr>'
+    + '</select></td>'+'<td><input type="number" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta"></td></tr>'
 
     // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
 

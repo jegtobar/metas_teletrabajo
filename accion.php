@@ -197,7 +197,7 @@ $vigente = $row['VIGENTE'];
                  	<button type="submit" class="btn btn-primary">Ver datos</button>
                  </div>
                  <div class="box-footer">
-                  <a class="btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
+                  <a class="fancy  btn btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
                  </div>
 
 				</form>              
@@ -220,7 +220,7 @@ $vigente = $row['VIGENTE'];
                   <th>POA</th>
                   <th>Activa</th>
                   <th>Meta</th>
-                  <!-- <th>Realizado</th>-->
+                  <th>Realizado</th>
                   <th style="width: 10%">Detalle</th>
                   <?php if ($vigente == 'S'){?>
                   <th style="width: 10%">Editar</th>
@@ -244,6 +244,7 @@ $vigente = $row['VIGENTE'];
                   <td>'.$poa[$i].'</td>
                   <td>'.$activa[$i].'</td>
                   <td>'.$meta[$i].'</td>
+                  <td>'.$cantidad[$i].'</td>
                   
                  ';
                if ($vigente == 'S'){

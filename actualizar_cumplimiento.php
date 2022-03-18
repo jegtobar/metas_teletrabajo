@@ -16,14 +16,14 @@ foreach ($cumplimiento['cumplimiento'] as $item) {
 
 if (isset($_POST['guardarCumplimiento'])){
 
-    $query = "SELECT CANTIDAD 
+    $query = "SELECT CANTIDAD,CODAREA 
 			FROM MTE_METAS
 			WHERE ID_META = ".$idMeta;
 			$stid = oci_parse($conn, $query);
 			oci_execute($stid, OCI_DEFAULT);
 			$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 			$cantidadGlobal = $row['CANTIDAD'];
-
+            $codArea = $row['CODAREA'];
             $cumpGlobal = 0;
             $cumpGlobal = $cumplimientoDetalle + (int)$cantidadGlobal;
 
@@ -37,7 +37,41 @@ if (isset($_POST['guardarCumplimiento'])){
     if($mensaje){
         
     	oci_commit($conn);
-  
+
+        $query = "INSERT INTO MTE_CUMPLIMIENTOS (ID_CUMPLIMIENTO,
+    		                                 ID_META,
+    						                 USUARIO,
+    		                                 FECHA,
+    		                                 CANTIDAD,
+    		                                 CODAREA)
+    		                         VALUES (SEQ_MTE_CUMPLIMIENTOS.NEXTVAL,
+    		           		                 ".$idMeta.",
+    		           		                 '".$usuario."',
+    		           		                 SYSDATE,
+    		           		                 ".$cumplimientoDetalle.",
+    		           		                 ".$codArea.")";
+    
+        $stid = oci_parse($conn, $query);
+        $mensaje = oci_execute($stid, OCI_DEFAULT);
+        
+        if($mensaje){
+        
+            oci_commit($conn);
+            
+        } else {
+            
+            $e = oci_error($stid);
+            print htmlentities($e['message']);
+            print "\n<pre>\n";
+            print htmlentities($e['sqltext']);
+            printf("\n%".($e['offset']+1)."s", "^");
+            print  "\n</pre>\n";
+            
+            die();
+            
+        }
+
+
         $idMetaDetalle=[];
         $idMetaDetalle['id']=$_POST['metaIdDetalle'];
     	$grabo = 'S';
