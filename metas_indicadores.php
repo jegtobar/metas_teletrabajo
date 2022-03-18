@@ -92,6 +92,53 @@ include 'bknd_indicadores.php';
         </div>
     </div>
 
+        <div class="col-md-12">
+        <div class="panel panel-default">
+                <div class="panel-heading"> 
+                    <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
+                        Secciones
+                    </h4>
+                </div>
+                <div class="panel-body">
+    <?php          
+
+        foreach ($secciones as $indicador) {
+            
+            echo '<div class="col-md-6">';
+
+            echo $indicador['DESCRIPCION'] . '</div><div class="col-md-6">';
+
+            $bar_style = 'progress-bar-success';
+
+            if ($indicador["cumplimientop"] <= 50) {
+                $bar_style = 'progress-bar-danger';
+            }elseif ($indicador["cumplimientop"] > 50 && $indicador["cumplimientop"] <= 70) {
+                $bar_style = 'progress-bar-warning';
+            }
+
+
+    ?>
+        <div class="panel-body">
+                    <div class="progress">
+    <?php    
+            echo '<div class="progress-bar '. $bar_style .' progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$indicador["cumplimientop"].  '%">' . $indicador["cumplimientop"] . '%';
+    ?>
+
+        </div>
+        </div>
+        </div>
+</div>
+
+
+<?php
+        }
+    
+    ?>
+</div>
+</div>
+</div>
+</div>
+
 
     <!-- Footer-->
     <footer class="footer">

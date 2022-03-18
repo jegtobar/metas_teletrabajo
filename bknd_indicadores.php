@@ -1,5 +1,5 @@
 <?php 
-include '../auth.php';
+// include '../auth.php';
 $query = "SELECT id_periodo AS periodo_vigente
 FROM mte_periodo
 WHERE vigente = 'S'";
@@ -121,31 +121,34 @@ $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-st
 
 /*Indicadores detalle por sección */
 
-$query = "SELECT META, REALIZADO from MTE_METAS_DETALLE where ID_META in 
-(select ID_META from MTE_METAS  where codarea = ".$codarea." and id_periodo = ".$idPeriodo.")";
+$query = "SELECT META, REALIZADO, T1.CODAREA, T2.DESCRIPCION 
+            from MTE_METAS_DETALLE T1
+            LEFT JOIN RH_AREAS T2
+            ON T1.CODAREA = T2.CODAREA
+            where ID_META in 
+            (select ID_META from MTE_METAS  where codarea = ".$codarea." and id_periodo = ".$idPeriodo.")";
 $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
+
+$secciones = [];
+
 while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
 
-    $mDetalle[] = $row['META'];
-    $rDetalle[] = $row['REALIZADO'];
+    $secciones [] = $row;
+
 }
 
+foreach ($secciones as &$seccion) {
 
-$k=0;
+    $cumplimientoDetalle = bcdiv($seccion["REALIZADO"], $seccion["META"], 3)*100;
 
-$datoIndicadores=[];
-foreach ($mDetalle as $item) {
-    $indicadores=[];
-    $r = $rDetalle{$k};
-    $cumplimientoDetalle = bcdiv($r, $item, 3)*100;
-    $div = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
-    $indicadores['ind']= $div;
-    $datoIndicadores[]=$indicadores;
-    $k++;
+    // $div = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
+    $seccion['cumplimientop']= $cumplimientoDetalle;
+
 }
-echo json_encode($datoIndicadores);
-// print_r($indicadores);
+
+//echo json_encode($secciones);
+
 /*Fin Indicadores detalle por sección */
 
 ?>
