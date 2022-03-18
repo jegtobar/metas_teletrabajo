@@ -1,5 +1,4 @@
 <?php 
-error_reporting(0);
 include '../auth.php';
 include 'bknd_indicadores.php';
 ?>
