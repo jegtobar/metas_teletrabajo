@@ -71,8 +71,7 @@ oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $realizadoTotal = $row['REALIZADO'];
 
-$division = ($realizadoTotal/$metaTotal)*100;
-$rendSemanal = number_format((float)$division, 2, '.', ''); 
+$rendSemanal = $realizadoTotal ? ($realizadoTotal/$metaTotal)*100 : 0;
 
 if ($rendSemanal<=50){
 $rendimientoSemanal = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
@@ -108,8 +107,9 @@ oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $realizadoPoa = $row['REALIZADO'];
 
-$division = ($realizadoPoa/$metaPoa)*100;
-$rendPoaSemanal = number_format((float)$division, 2, '.', '');
+$rendPoaSemanal = $realizadoPoa ? ($realizadoPoa/$metaPoa)*100 : 0;
+
+
 
 if ($rendPoaSemanal<=50){
 $rendimientoPoa = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
@@ -129,7 +129,9 @@ $query = "SELECT META, REALIZADO, T1.CODAREA, T2.DESCRIPCION
             ON T1.CODAREA = T2.CODAREA
             where ID_META in 
             (select ID_META from MTE_METAS  where activa=1 and codarea = ".$codarea." and id_periodo = ".$idPeriodo.")";
+
 $stid = oci_parse($conn, $query);
+
 oci_execute($stid, OCI_DEFAULT);
 
 $secciones = [];
@@ -141,13 +143,34 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
 }
 
 foreach ($secciones as &$seccion) {
-    $division = ($seccion["REALIZADO"]/$seccion["META"])*100;
-    $cumplimientoDetalle =  number_format((float)$division, 2, '.', ''); 
-    // $div = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
+
+    $cumplimientoDetalle = ($seccion["REALIZADO"]/$seccion["META"])*100;
+
     $seccion['cumplimientop']= $cumplimientoDetalle;
 }
 
-//echo json_encode($secciones);
+// Buscar el detalle de metas por POA, Actividades Regulares y Adicionales
+$query = "SELECT T1.*, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
+          FROM MTE_METAS_DETALLE T1
+          INNER JOIN MTE_METAS T2
+          ON T1.ID_META = T2.ID_META
+          WHERE T1.ID_META = 16056
+          AND T2.POA = 1
+          AND T2.ACTIVA = 1";
+
+$stid = oci_parse($conn, $query);
+
+oci_execute($stid, OCI_DEFAULT);
+
+$metas_poa = [];
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+
+     $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
+     $row["MODALIDAD"] = $modalidad;
+     $metas_poa [] = $row;
+
+}
 
 /*Fin Indicadores detalle por sección */
 

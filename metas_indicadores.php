@@ -1,5 +1,4 @@
 <?php 
-error_reporting(0);
 include '../auth.php';
 include 'bknd_indicadores.php';
 ?>
@@ -57,7 +56,7 @@ include 'bknd_indicadores.php';
 
 <div class="content animate-panel">
 <div class="row">
-	<div class="col-lg-6">
+	<div class="col-lg-6 col-md-6">
         <div id="rendSemanal">
             <div class="panel panel-default">
                 <div class="panel-heading"> 
@@ -67,14 +66,14 @@ include 'bknd_indicadores.php';
                 </div>
                 <div class="panel-body">
                     <div class="progress">
-                        <?php echo $rendimientoSemanal; echo ($rendSemanal.'%');?>
+                        <?php echo $rendimientoSemanal; echo ($rendSemanal ? $rendSemanal.'%' : null);?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-6 col-md-6">
         <div id="rendPoa">
             <div class="panel panel-default">
                 <div class="panel-heading"> 
@@ -139,6 +138,109 @@ include 'bknd_indicadores.php';
 </div>
 </div>
 
+        <!-- Detalle -->
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">POA</a></li>
+        </ul>
+
+        <br>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th width="50%">Actividad</th>
+                            <th width="30%">Modalidad</th>
+                            <th width="10%">Realizado</th>
+                            <th width="10%">Meta</th>
+                        </tr>
+                    </thead>
+                    <t-body>
+                        <?php 
+
+                            foreach ($metas_poa as $meta) {
+                                
+                                echo ' <tr>
+                                        <td>'. $meta['NOMBRE'] .'</td>
+                                        <td>' . $meta['MODALIDAD'] .'</td>
+                                        <td>'.$meta['REALIZADO'].'</td>
+                                        <td>'.$meta['META'].'</td>
+                                    </tr>';
+
+                            }
+                            
+                        ?>
+                    </t-body>
+                </table>
+            </div>
+        </div>
+
+        <br>
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Actividades Regulares</a></li>
+        </ul>
+
+        <br>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th width="50%">Actividad</th>
+                                <th width="30%">Modalidad</th>
+                                <th width="10%">Realizado</th>
+                                <th width="10%">Meta</th>
+                            </tr>
+                        </thead>
+                        <t-body>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </t-body>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Adicionales</a></li>
+        </ul>
+
+        <br>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th width="50%">Actividad</th>
+                                <th width="30%">Modalidad</th>
+                                <th width="10%">Realizado</th>
+                                <th width="10%">Meta</th>
+                            </tr>
+                        </thead>
+                        <t-body>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </t-body>
+                    </table>
+                </div>
+            </div>
+        </div>
 
     <!-- Footer-->
     <footer class="footer">
