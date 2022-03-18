@@ -162,11 +162,11 @@ include 'bknd_indicadores.php';
                             foreach ($metas_poa as $meta) {
                                 
                                 echo ' <tr>
-                                        <td>'. $meta['NOMBRE'] .'</td>
-                                        <td>' . $meta['MODALIDAD'] .'</td>
-                                        <td>'.$meta['REALIZADO'].'</td>
-                                        <td>'.$meta['META'].'</td>
-                                    </tr>';
+                                            <td>'. $meta['NOMBRE'] .'</td>
+                                            <td>' . $meta['MODALIDAD'] .'</td>
+                                            <td>'.$meta['REALIZADO'].'</td>
+                                            <td>'.$meta['META'].'</td>
+                                        </tr>';
 
                             }
                             
