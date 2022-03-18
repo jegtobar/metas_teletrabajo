@@ -150,7 +150,7 @@ include 'bknd_indicadores.php';
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th width="50%">Actividad</th>
+                            <th width="50%">Descripción</th>
                             <th width="30%">Modalidad</th>
                             <th width="10%">Realizado</th>
                             <th width="10%">Meta</th>
@@ -190,19 +190,27 @@ include 'bknd_indicadores.php';
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th width="50%">Actividad</th>
+                                <th width="50%">Descripción</th>
                                 <th width="30%">Modalidad</th>
                                 <th width="10%">Realizado</th>
                                 <th width="10%">Meta</th>
                             </tr>
                         </thead>
                         <t-body>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                             <?php 
+
+                                foreach ($metas_regulares as $meta) {
+                                    
+                                    echo ' <tr>
+                                            <td>'. $meta['NOMBRE'] .'</td>
+                                            <td>' . $meta['MODALIDAD'] .'</td>
+                                            <td>'.$meta['REALIZADO'].'</td>
+                                            <td>'.$meta['META'].'</td>
+                                        </tr>';
+
+                                }
+                                
+                            ?>
                         </t-body>
                     </table>
                 </div>
@@ -230,12 +238,20 @@ include 'bknd_indicadores.php';
                             </tr>
                         </thead>
                         <t-body>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            <?php 
+
+                                foreach ($metas_adicionales as $meta) {
+                                    
+                                    echo ' <tr>
+                                            <td>'. $meta['NOMBRE'] .'</td>
+                                            <td>' . $meta['MODALIDAD'] .'</td>
+                                            <td>'.$meta['REALIZADO'].'</td>
+                                            <td>'.$meta['META'].'</td>
+                                        </tr>';
+
+                                }
+                                
+                            ?>
                         </t-body>
                     </table>
                 </div>
