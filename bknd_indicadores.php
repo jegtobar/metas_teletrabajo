@@ -120,28 +120,31 @@ $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-st
 /*Fin indicador POA */
 
 /*Indicadores detalle por sección */
-$d = [];
+
 $query = "SELECT META, REALIZADO from MTE_METAS_DETALLE where ID_META in 
 (select ID_META from MTE_METAS  where codarea = ".$codarea." and id_periodo = ".$idPeriodo.")";
 $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
 while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
-    $d['metaDetalle'] = $row['META'];
-    $d['realizadoDetalle'] = $row['REALIZADO'];
+
+    $mDetalle[] = $row['META'];
+    $rDetalle[] = $row['REALIZADO'];
 }
-print_r($d);
-// $k=0;
-// $indicadores=[];
-// foreach ($d['metaDetalle'] as $item) {
 
-//     echo $item;
-//     // $m = $d['metaDetalle']{$k};
-//     // $det = $d['metaDetalle']{$k};
-//     // $cumplimientoDetalle = bcdiv($det, $m, 3)*100;
-//     // $indicadores['div']='<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
-//     // $k++;
-// }
 
+$k=0;
+
+$datoIndicadores=[];
+foreach ($mDetalle as $item) {
+    $indicadores=[];
+    $r = $rDetalle{$k};
+    $cumplimientoDetalle = bcdiv($r, $item, 3)*100;
+    $div = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
+    $indicadores['ind']= $div;
+    $datoIndicadores[]=$indicadores;
+    $k++;
+}
+echo json_encode($datoIndicadores);
 // print_r($indicadores);
 /*Fin Indicadores detalle por sección */
 
