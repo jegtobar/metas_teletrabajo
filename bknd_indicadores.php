@@ -147,7 +147,6 @@ foreach ($secciones as &$seccion) {
     $cumplimientoDetalle = ($seccion["REALIZADO"]/$seccion["META"])*100;
 
     $seccion['cumplimientop']= $cumplimientoDetalle;
-
 }
 
 // Buscar el detalle de metas por POA, Actividades Regulares y Adicionales

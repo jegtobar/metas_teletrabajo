@@ -43,7 +43,6 @@ if (isset($_POST['guardarMeta'])){
   
      $query = "UPDATE MTE_METAS 
                   SET NOMBRE = '".$nombre."',
-		              META = ".$meta.",
                       TIPO = '".$tipo."',
                       MODALIDAD = '".$modalidad."',
                       USUARIO = '".$usuario."',
@@ -133,7 +132,6 @@ if (isset($_POST['seccionDetalleNew'])){
      $query = "UPDATE MTE_METAS 
                   SET NOMBRE = '".$nombre."',
 		              CANTIDAD = ".$cantidad.",
-		              META = ".$nuevaMeta.",
                       TIPO = '".$tipo."',
                       MODALIDAD = '".$modalidad."',
                       USUARIO = '".$usuario."',

@@ -22,7 +22,14 @@
 
 	$nuevaMeta = (int)$meta - (int)$metaDetalle;
 
-
+		$query = "DELETE FROM MTE_CUMPLIMIENTOS
+		WHERE ID_META = ".$id_meta;
+	    $stid = oci_parse($conn, $query);
+	    $mensaje = oci_execute($stid, OCI_DEFAULT);
+	    
+	    if($mensaje){
+	        oci_commit($conn);
+		}
 
 	$query = "DELETE FROM MTE_METAS_DETALLE
 			WHERE ID_META_DETALLE = ".$id_meta;
@@ -32,11 +39,9 @@
 
 	if($mensaje){
 	    
-	    oci_commit($conn);
-	    
+	    oci_commit($conn);	    
 		$query = "DELETE FROM MTE_METAS_DETALLE
 		WHERE ID_META_DETALLE = ".$id_meta;
-	    
 	    $stid = oci_parse($conn, $query);
 	    $mensaje = oci_execute($stid, OCI_DEFAULT);
 	    
