@@ -145,7 +145,6 @@ foreach ($secciones as &$seccion) {
     $cumplimientoDetalle =  number_format((float)$division, 2, '.', ''); 
     // $div = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$cumplimientoDetalle.'%"></div>';
     $seccion['cumplimientop']= $cumplimientoDetalle;
-
 }
 
 //echo json_encode($secciones);

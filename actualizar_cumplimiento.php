@@ -70,8 +70,6 @@ if (isset($_POST['guardarCumplimiento'])){
             die();
             
         }
-
-
         $idMetaDetalle=[];
         $idMetaDetalle['id']=$_POST['metaIdDetalle'];
     	$grabo = 'S';
@@ -79,7 +77,11 @@ if (isset($_POST['guardarCumplimiento'])){
 
         foreach ($idMetaDetalle['id'] as $item) {
             $realizado = $cumplimiento['cumplimiento']{$i};
+            if (empty($realizado)){
+                $realizado = 0;
+            }
             $idMeta = $item;
+           
         
             $query = "UPDATE MTE_METAS_DETALLE
                   SET REALIZADO = (SELECT (realizado +".$realizado." ) from MTE_METAS_DETALLE where ID_META_DETALLE =".$idMeta.")
