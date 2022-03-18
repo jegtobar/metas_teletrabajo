@@ -150,11 +150,22 @@ foreach ($secciones as &$seccion) {
 }
 
 // Buscar el detalle de metas por POA, Actividades Regulares y Adicionales
+
+/* 
+     Se realiza la busqueda para actividades que son POA
+*/
+
 $query = "SELECT T1.*, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
           FROM MTE_METAS_DETALLE T1
           INNER JOIN MTE_METAS T2
           ON T1.ID_META = T2.ID_META
-          WHERE T1.ID_META = 16056
+          WHERE T1.ID_META IN (
+               SELECT ID_META
+               FROM MTE_METAS
+               WHERE ID_PERIODO = $periodo_vigente
+               AND ACTIVA = 1
+               AND CODAREA = $codarea
+          )
           AND T2.POA = 1
           AND T2.ACTIVA = 1";
 
@@ -169,6 +180,72 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
      $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
      $row["MODALIDAD"] = $modalidad;
      $metas_poa [] = $row;
+
+}
+
+/* 
+     Se realiza la busqueda para actividades que son regulares y NO SON POA
+*/
+
+$query = "SELECT T1.*, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
+          FROM MTE_METAS_DETALLE T1
+          INNER JOIN MTE_METAS T2
+          ON T1.ID_META = T2.ID_META
+          WHERE T1.ID_META IN (
+               SELECT ID_META
+               FROM MTE_METAS
+               WHERE ID_PERIODO = $periodo_vigente
+               AND ACTIVA = 1
+               AND CODAREA = $codarea
+          )
+          AND T2.MODALIDAD = 'R'
+          AND T2.POA IS NULL
+          AND T2.ACTIVA = 1";
+
+$stid = oci_parse($conn, $query);
+
+oci_execute($stid, OCI_DEFAULT);
+
+$metas_regulares = [];
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+
+     $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
+     $row["MODALIDAD"] = $modalidad;
+     $metas_regulares [] = $row;
+
+}
+
+/* 
+     Se realiza la busqueda para actividades que son adicionales y NO SON POA
+*/
+
+$query = "SELECT T1.*, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
+          FROM MTE_METAS_DETALLE T1
+          INNER JOIN MTE_METAS T2
+          ON T1.ID_META = T2.ID_META
+          WHERE T1.ID_META IN (
+               SELECT ID_META
+               FROM MTE_METAS
+               WHERE ID_PERIODO = $periodo_vigente
+               AND ACTIVA = 1
+               AND CODAREA = $codarea
+          )
+          AND T2.MODALIDAD = 'A'
+          AND T2.POA IS NULL
+          AND T2.ACTIVA = 1";
+
+$stid = oci_parse($conn, $query);
+
+oci_execute($stid, OCI_DEFAULT);
+
+$metas_adicionales = [];
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+
+     $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
+     $row["MODALIDAD"] = $modalidad;
+     $metas_adicionales [] = $row;
 
 }
 
