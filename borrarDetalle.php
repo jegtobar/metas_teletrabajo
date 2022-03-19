@@ -10,6 +10,7 @@
 	$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 	$realizado = $row['REALIZADO'];
 
+
 	$query = "SELECT ID_META, CANTIDAD 
 			FROM MTE_METAS
 			WHERE ID_META = (SELECT ID_META FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta.")";
@@ -21,7 +22,7 @@
 	
 
 	$nuevaCantidad = (int)$cantidad - (int)$realizado;
-	echo $nuevaCantidad;
+
 
 
 	$query = "DELETE FROM MTE_METAS_DETALLE

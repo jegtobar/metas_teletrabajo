@@ -42,7 +42,14 @@ if (isset($_REQUEST['id_meta'])){
       $detalle_meta[] = $row['META'];
     }
 
-   
+    $metaT = 0;
+    foreach ($detalle_meta as $item) {
+        $metaT = $metaT + $item;
+    }
+    $grabo = '';
+    if($metaT == $meta ){
+      $grabo = 'M';
+    }
       $inDetalle = 'S';
       $query ="SELECT codarea,descripcion
       FROM RH_AREAS
@@ -133,6 +140,14 @@ if (isset($_REQUEST['id_meta'])){
               <option value="A" <?php if(isset($id_meta)){if($modalidad == 'A'){echo 'selected="selected"';}}?>>Adicional</option>
             </select>
             <br>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <label for="mte_meta" style="font-size: 18px">Meta</label>
+                  <input type="text" class="text" value="<?php if (isset($id_meta)){echo $meta;}?>" id="mte_meta" name="mte_meta">
+                </div>
+              </div>
+            </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
@@ -338,6 +353,13 @@ $('#agregar').on('click',function(){
      
     
   });
+</script>
+<?php }?>
+
+<?php if ($grabo == 'M'){?>
+<script>
+$("#agregar").hide();
+$("#tablaDetalle").hide();
 </script>
 <?php }?>
 </html>

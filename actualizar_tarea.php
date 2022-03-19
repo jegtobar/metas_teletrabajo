@@ -5,6 +5,7 @@ $grabo = 'N';
 $idMetaPadre = $_POST['metaId'];
 $nombre = $_POST['nombre'];
 // $cantidad = $_POST['cantidad'];
+$mte_meta = $_POST['mte_meta'];
 $modalidad = $_POST['modalidad'];
 $justificacion = $_POST['justificacion'];
 $tipo = $_POST['tipo'];
@@ -20,8 +21,6 @@ if (isset($_POST['detalleMetaEdit'])){
     }
 
 }
-
-
 
 if(!isset($_POST['estatus'])){
     $activa=0;
@@ -49,6 +48,7 @@ if (isset($_POST['guardarMeta'])){
   
      $query = "UPDATE MTE_METAS 
                   SET NOMBRE = '".$nombre."',
+                      META = ".$mte_meta.",
                       TIPO = '".$tipo."',
                       MODALIDAD = '".$modalidad."',
                       USUARIO = '".$usuario."',
@@ -65,12 +65,30 @@ if (isset($_POST['guardarMeta'])){
     if($mensaje){
         
     	oci_commit($conn);
-  
+        $grabo = 'S';
+        
         if (isset($_POST['metaIdDetalle'])){
         $idMetaDetalle=[];
         $idMetaDetalle['id']=$_POST['metaIdDetalle'];
     	$grabo = 'S';
         $i=0;
+
+        $query = "SELECT  META 
+        FROM  MTE_METAS
+        WHERE id_meta = ".$idMetaPadre;
+        $stid = oci_parse($conn, $query);
+        oci_execute($stid, OCI_DEFAULT);
+        $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+        $metaActual = $row['META'];
+
+        $metaT = 0;
+        foreach ($idMetaDetalle['id'] as $item) {
+            $m = $detalle['meta']{$i};
+            $metaT = $metaT + $m;
+        }
+        if($metaT > $metaActual){
+            $grabo = 'M';
+        }else{
 
         foreach ($idMetaDetalle['id'] as $item) {
             $meta = $detalle['meta']{$i};
@@ -97,6 +115,7 @@ if (isset($_POST['guardarMeta'])){
                     }
             }
         }
+    }
 
     	
     } else {
@@ -133,13 +152,14 @@ if (isset($_POST['seccionDetalleNew'])){
     oci_execute($stid, OCI_DEFAULT);
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $metaActual = $row['META'];
-    $nuevaMeta = $metaActual + $meta;
-  
-
+    if($meta > $metaActual){
+        $grabo = 'M';
+    }else{
     $cantidad=0;
      $query = "UPDATE MTE_METAS 
                   SET NOMBRE = '".$nombre."',
 		              CANTIDAD = ".$cantidad.",
+                      META = ".$mte_meta.",
                       TIPO = '".$tipo."',
                       MODALIDAD = '".$modalidad."',
                       USUARIO = '".$usuario."',
@@ -192,6 +212,7 @@ if (isset($_POST['seccionDetalleNew'])){
                     
                 }
     }
+}
 }
 }
 
@@ -288,6 +309,27 @@ $( document ).ready(function() {
                 confirmButtonText: "Ok",
                 closeOnConfirm: false,
                 closeOnCancel: false 
+         },
+            function (isConfirm) {
+                if (isConfirm) {
+                    	parent.location.reload(true);
+                }
+            }
+    );
+
+});
+</script>
+<?php }?>
+
+
+<?php if ($grabo == 'M'){?>
+<script>
+$( document ).ready(function() {
+    
+    swal({
+        type: 'error',
+        title: 'Oops...',
+        text: 'El detalle no puede ser mayor a la meta establecida',
          },
             function (isConfirm) {
                 if (isConfirm) {
