@@ -61,12 +61,21 @@ include 'bknd_indicadores.php';
             <div class="panel panel-default">
                 <div class="panel-heading"> 
                     <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
-                        Rendimiento Semanal
+                        Rendimiento Semanal 
                     </h4>
                 </div>
+
+
                 <div class="panel-body">
-                    <div class="progress">
-                        <?php echo $rendimientoSemanal; echo ($rendSemanal ? $rendSemanal.'%' : null);?>
+                <div class="row">
+                        <div class="col-md-10">
+                            <div class="progress">
+                                <?php echo $rendimientoSemanal; echo ($rendSemanal ? $rendSemanal.'%' : null);?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                        <h4 class="<?php echo $colorText;?>"><?php echo $rendSemanal;?>%</h4>
                         </div>
                     </div>
                 </div>
@@ -78,12 +87,19 @@ include 'bknd_indicadores.php';
             <div class="panel panel-default">
                 <div class="panel-heading"> 
                     <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
-                        POA
+                        POA 
                     </h4>
                 </div>
                 <div class="panel-body">
-                    <div class="progress">
-                         <?php echo $rendimientoPoa; echo ($rendPoaSemanal.'%');?>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="progress">
+                            <?php echo $rendimientoPoa; echo ($rendPoaSemanal.'%');?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <h4 class="<?php echo $colorText;?>"><?php echo $rendPoaSemanal;?>%</h4>
                         </div>
                     </div>
                 </div>
@@ -92,47 +108,49 @@ include 'bknd_indicadores.php';
     </div>
 
         <div class="col-md-12">
-        <div class="panel panel-default">
-                <div class="panel-heading"> 
-                    <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
-                        Secciones
-                    </h4>
-                </div>
-                <div class="panel-body">
-    <?php          
+            <div class="panel panel-default">
+                    <div class="panel-heading"> 
+                        <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
+                            Secciones
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <?php          
 
-        foreach ($secciones as $indicador) {
+                            foreach ($secciones as $indicador) {
+                                
+                                echo '<div class="col-md-4">';
+
+                                echo $indicador['DESCRIPCION'] . '</div><div class="col-md-8">';
+
+                                $bar_style = 'progress-bar-success';
+
+                                if ($indicador["cumplimientop"] <= 50) {
+                                    $bar_style = 'progress-bar-danger';
+                                }elseif ($indicador["cumplimientop"] > 50 && $indicador["cumplimientop"] <= 70) {
+                                    $bar_style = 'progress-bar-warning';
+                                }
+
+
+                        ?>
+                            <div class="panel-body">
+                                        <div class="progress">
+                        <?php    
+                                echo '<div class="progress-bar '. $bar_style .' progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$indicador["cumplimientop"].  '%">' . $indicador["cumplimientop"] . '%';
+                        ?>
+
+                            </div>
+                        </div>
+            </div>
             
-            echo '<div class="col-md-6">';
-
-            echo $indicador['DESCRIPCION'] . '</div><div class="col-md-6">';
-
-            $bar_style = 'progress-bar-success';
-
-            if ($indicador["cumplimientop"] <= 50) {
-                $bar_style = 'progress-bar-danger';
-            }elseif ($indicador["cumplimientop"] > 50 && $indicador["cumplimientop"] <= 70) {
-                $bar_style = 'progress-bar-warning';
-            }
-
-
-    ?>
-        <div class="panel-body">
-                    <div class="progress">
-    <?php    
-            echo '<div class="progress-bar '. $bar_style .' progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$indicador["cumplimientop"].  '%">' . $indicador["cumplimientop"] . '%';
-    ?>
-
         </div>
-        </div>
-        </div>
-</div>
-
-
+                              
+         
 <?php
         }
     
     ?>
+    
 </div>
 </div>
 </div>

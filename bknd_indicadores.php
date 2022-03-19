@@ -71,13 +71,16 @@ oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $realizadoTotal = $row['REALIZADO'];
 
-$rendSemanal = $realizadoTotal ? ($realizadoTotal/$metaTotal)*100 : 0;
+$rendSemanal = $realizadoTotal ?number_format((float)(($realizadoTotal/$metaTotal)*100), 2, '.', '')  : 0;
 
 if ($rendSemanal<=50){
+$colorText = 'text-danger';
 $rendimientoSemanal = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
 }else if($rendSemanal>50 && $rendSemanal<=70){
+     $colorText = 'text-warning';
 $rendimientoSemanal = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
 }else{
+     $colorText = 'text-success';
 $rendimientoSemanal = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
 }
 /*Fin indicador Rendimiento Semanal */
@@ -106,16 +109,18 @@ $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $realizadoPoa = $row['REALIZADO'];
-
-$rendPoaSemanal = $realizadoPoa ? ($realizadoPoa/$metaPoa)*100 : 0;
+$rendPoaSemanal = $realizadoPoa ? number_format((float)(($realizadoPoa/$metaPoa)*100), 2, '.', '') : 0;
 
 
 
 if ($rendPoaSemanal<=50){
+     $colorText = 'text-danger';
 $rendimientoPoa = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
 }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
+     $colorText = 'text-warning';
 $rendimientoPoa = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
 }else{
+     $colorText = 'text-success';
 $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
 }
 

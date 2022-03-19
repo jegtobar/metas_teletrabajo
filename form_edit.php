@@ -41,15 +41,18 @@ if (isset($_REQUEST['id_meta'])){
       $dependencia[] = $row['DESCRIPCION'];
       $detalle_meta[] = $row['META'];
     }
-
-    $metaT = 0;
+    $grabo = '';
+    if (isset($detalle_meta)){
+      $metaT = 0;
     foreach ($detalle_meta as $item) {
         $metaT = $metaT + $item;
     }
-    $grabo = '';
+   
     if($metaT == $meta ){
       $grabo = 'M';
     }
+    }
+    
       $inDetalle = 'S';
       $query ="SELECT codarea,descripcion
       FROM RH_AREAS
