@@ -74,12 +74,12 @@ if (isset($_POST['guardarCumplimiento'])){
         $idMetaDetalle['id']=$_POST['metaIdDetalle'];
     	$grabo = 'S';
         $i=0;
-
         foreach ($idMetaDetalle['id'] as $item) {
             $realizado = $cumplimiento['cumplimiento']{$i};
             if (empty($realizado)){
                 $realizado = 0;
             }
+            
             $idMeta = $item;
            
         

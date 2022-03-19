@@ -63,8 +63,6 @@ if (isset($_REQUEST['id_meta'])){
         $arreglo['descripcion'] = $row['DESCRIPCION'];
         $data[]=$arreglo;
         }
-    
-	
 }
 
 ?>
