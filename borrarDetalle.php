@@ -4,32 +4,25 @@
 
 	$id_meta = $_REQUEST['id_meta'];
 
-	$query = "SELECT META FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta;
+	$query = "SELECT REALIZADO FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta;
 	$stid = oci_parse($conn, $query);
 	oci_execute($stid, OCI_DEFAULT);
 	$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-	$metaDetalle = $row['META'];
+	$realizado = $row['REALIZADO'];
 
-	$query = "SELECT ID_META, META 
+	$query = "SELECT ID_META, CANTIDAD 
 			FROM MTE_METAS
 			WHERE ID_META = (SELECT ID_META FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta.")";
 			$stid = oci_parse($conn, $query);
 			oci_execute($stid, OCI_DEFAULT);
 			$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 			$idMeta = $row['ID_META'];
-			$meta = $row['META'];
+			$cantidad = $row['CANTIDAD'];
 	
 
-	$nuevaMeta = (int)$meta - (int)$metaDetalle;
+	$nuevaCantidad = (int)$cantidad - (int)$realizado;
+	echo $nuevaCantidad;
 
-		$query = "DELETE FROM MTE_CUMPLIMIENTOS
-		WHERE ID_META = ".$id_meta;
-	    $stid = oci_parse($conn, $query);
-	    $mensaje = oci_execute($stid, OCI_DEFAULT);
-	    
-	    if($mensaje){
-	        oci_commit($conn);
-		}
 
 	$query = "DELETE FROM MTE_METAS_DETALLE
 			WHERE ID_META_DETALLE = ".$id_meta;
@@ -39,9 +32,11 @@
 
 	if($mensaje){
 	    
-	    oci_commit($conn);	    
+	    oci_commit($conn);
+	    
 		$query = "DELETE FROM MTE_METAS_DETALLE
 		WHERE ID_META_DETALLE = ".$id_meta;
+	    
 	    $stid = oci_parse($conn, $query);
 	    $mensaje = oci_execute($stid, OCI_DEFAULT);
 	    
@@ -50,7 +45,7 @@
 	        
 	        oci_commit($conn);
 			$query = "UPDATE MTE_METAS 
-			SET	META = ".$nuevaMeta."
+			SET	CANTIDAD = ".$nuevaCantidad."
 			WHERE id_meta = ".$idMeta;
 			$stid = oci_parse($conn, $query);          
 			$mensaje = oci_execute($stid, OCI_DEFAULT);

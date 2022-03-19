@@ -234,6 +234,7 @@ $query = "SELECT T1.*, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
           AND T2.MODALIDAD = 'A'
           AND T2.POA IS NULL
           AND T2.ACTIVA = 1";
+          
 
 $stid = oci_parse($conn, $query);
 

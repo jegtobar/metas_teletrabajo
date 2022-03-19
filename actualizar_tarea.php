@@ -9,7 +9,18 @@ $modalidad = $_POST['modalidad'];
 $justificacion = $_POST['justificacion'];
 $tipo = $_POST['tipo'];
 $detalle = [];
-$detalle['meta']=$_POST['detalleMetaEdit'];
+if (isset($_POST['detalleMetaEdit'])){
+
+
+    $detalle['meta']=$_POST['detalleMetaEdit'];
+    $meta = 0;
+    foreach ($detalle['meta'] as $item) {
+        $meta = $meta + (int)$item;
+        
+    }
+
+}
+
 
 
 if(!isset($_POST['estatus'])){
@@ -25,11 +36,6 @@ if(!isset($_POST['poa'])){
 }
 
 
-$meta = 0;
-foreach ($detalle['meta'] as $item) {
-    $meta = $meta + (int)$item;
-    
-}
 
 
 if(empty($justificacion)){
@@ -60,6 +66,7 @@ if (isset($_POST['guardarMeta'])){
         
     	oci_commit($conn);
   
+        if (isset($_POST['metaIdDetalle'])){
         $idMetaDetalle=[];
         $idMetaDetalle['id']=$_POST['metaIdDetalle'];
     	$grabo = 'S';
@@ -89,6 +96,7 @@ if (isset($_POST['guardarMeta'])){
                         
                     }
             }
+        }
 
     	
     } else {
@@ -126,7 +134,7 @@ if (isset($_POST['seccionDetalleNew'])){
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $metaActual = $row['META'];
     $nuevaMeta = $metaActual + $meta;
-    echo $nuevaMeta;
+  
 
     $cantidad=0;
      $query = "UPDATE MTE_METAS 
