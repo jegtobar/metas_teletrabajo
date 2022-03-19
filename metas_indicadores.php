@@ -137,7 +137,7 @@ include 'bknd_indicadores.php';
                                         <div class="progress">
                         <?php    
                                 echo '<div class="progress-bar '. $bar_style .' progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$indicador["cumplimientop"].  '%">' . $indicador["cumplimientop"] . '%';
-                        ?>
+                            ?>
 
                             </div>
                         </div>
