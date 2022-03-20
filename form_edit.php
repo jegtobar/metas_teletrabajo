@@ -47,7 +47,7 @@ if (isset($_REQUEST['id_meta'])){
         $metaT = $metaT + $item;
     }
    
-    if($metaT == $meta ){
+    if($metaT >= $meta ){
       $grabo = 'M';
     }
     }

@@ -123,6 +123,9 @@ $vigente = $row['VIGENTE'];
     <link rel="stylesheet" href="vendor/sweetalert/lib/sweet-alert.css" />
     
   <link rel="stylesheet" href="dist/jquery.fancybox.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
  <style>
  #fancybox-wrap {
   position: absolute;
@@ -132,7 +135,7 @@ $vigente = $row['VIGENTE'];
 </head>
 <body class="hold-transition skin-blue layout-top-nav">
 
-<div class="wrapper">
+<div class="wrapper" id="app">
 
   <header class="main-header" style="height: 75px;background-color: #A2CE39">
     <nav class="navbar navbar-static-top" style="background-color: #A2CE39">
@@ -197,7 +200,7 @@ $vigente = $row['VIGENTE'];
                  	<button type="submit" class="btn btn-primary">Ver datos</button>
                  </div>
                  <div class="box-footer">
-                  <a class="fancy  btn btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
+                    <a class="fancy  btn btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
                  </div>
 
 				</form>              
@@ -321,6 +324,10 @@ $vigente = $row['VIGENTE'];
           "pageLength": 25
 	    }); 
   });
+  
+</script>
+
+<script>
   
 </script>
 <!-- Fin de plugins para Datatables -->

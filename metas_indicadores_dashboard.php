@@ -22,8 +22,6 @@
 
     <!-- App styles -->
     <link rel="stylesheet" href="fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" />
-    <link rel="stylesheet" href="fonts/pe-icon-7-stroke/css/helper.css" />
-    <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css" />
 
     <script src="vue/vue.js"></script>
@@ -281,7 +279,6 @@
 <script type="application/javascript" src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 
 <!-- App scripts -->
-<script type="application/javascript" src="scripts/homer.js"></script>
 
     
 <script>
@@ -302,14 +299,13 @@
             fetchData(){
 
                 const queryString = window.location.search;
-                console.log(queryString);
 
                 const urlParams = new URLSearchParams(queryString);
 
                 const codarea = urlParams.get('area')
                 const id_periodo = urlParams.get('id_periodo')
 
-                fetch('get_indicadores.php', {
+                fetch('get_indicadores_without_auth.php', {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
@@ -330,14 +326,21 @@
             },
             fetchDetail(seccion){
 
-                fetch('get_detalle_indicadores.php', {
+                const queryString = window.location.search;
+
+                const urlParams = new URLSearchParams(queryString);
+
+                const id_periodo = urlParams.get('id_periodo')
+
+                fetch('get_detalle_indicadores_without_auth.php', {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        codarea: seccion.CODAREA
+                        codarea: seccion.CODAREA,
+                        id_periodo: id_periodo
                     })
                 })
                 .then(response => response.json())
