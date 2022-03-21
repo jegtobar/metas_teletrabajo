@@ -4,6 +4,7 @@ include '../auth.php';
 
 if (isset($_REQUEST['id_meta'])){
     
+    $pendienteAsignar = 0;
     $query = "SELECT id_meta,
                      nombre,
                      tipo,
@@ -45,13 +46,17 @@ if (isset($_REQUEST['id_meta'])){
       $metaT = 0;
     foreach ($detalle_meta as $item) {
         $metaT = $metaT + $item;
+        $pendienteAsignar=$metaT;
     }
-   
+    
     if($metaT >= $meta ){
       $grabo = 'M';
     }
-    }
     
+    }
+    $pendiente = $meta - $pendienteAsignar;
+      
+
       $inDetalle = 'S';
       $query ="SELECT codarea,descripcion
       FROM RH_AREAS
@@ -148,6 +153,15 @@ if (isset($_REQUEST['id_meta'])){
                 </div>
               </div>
             </div> -->
+
+             <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <label for="mte_meta" style="font-size: 18px">Pendiente de asignación</label>
+                  <input type="text" id="asignacion" class="asignacion" value="<?php if (isset($id_meta)){echo $pendiente;}?>" id="asignacion" name="asignacion" disabled>
+                </div>
+              </div>
+            </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
@@ -216,7 +230,7 @@ if (isset($_REQUEST['id_meta'])){
                         </select>
                       </td>
                       <td>
-                        <input type="number" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta">
+                        <input type="number" class="Can_Produc" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta">
                       </td>
                     </tr>
                   </tbody>
@@ -345,11 +359,29 @@ $('#agregar').on('click',function(){
             echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
           }
        ?>
-    + '</select></td>'+'<td><input type="number" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta"></td></tr>'
+    + '</select></td>'+'<td><input type="number" class="Can_Produc" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta"></td></tr>'
 
     // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
 
     $('#listaSecciones').append(select);
+    $('.Can_Produc').keyup(function () {
+        const valueActual = document.getElementById('asignacion').value
+        var valor = parseInt(valor_inicial);
+        var valor_restar = 0;
+        $('.Can_Produc').each(function () {
+          if ($(this).val() > 0) {
+            valor_restar += parseInt($(this).val());
+          }
+        });
+        $('#asignacion').val(valor - valor_restar);
+        const value = document.getElementById('asignacion').value
+        if (value==0){
+          $("#agregar").hide();
+        }else{
+          $("#agregar").show();
+        }
+      
+    });
      
     
   });
@@ -362,4 +394,28 @@ $("#agregar").hide();
 $("#tablaDetalle").hide();
 </script>
 <?php }?>
+
+<script>
+  var valor_inicial = $('#asignacion').val();
+  $( document ).ready(function() {
+  $('.Can_Produc').keyup(function () {
+        const valueActual = document.getElementById('asignacion').value
+        var valor = parseInt(valor_inicial);
+        var valor_restar = 0;
+        $('.Can_Produc').each(function () {
+          if ($(this).val() > 0) {
+            valor_restar += parseInt($(this).val());
+          }
+        });
+        $('#asignacion').val(valor - valor_restar);
+        const value = document.getElementById('asignacion').value
+        if (value==0){
+          $("#agregar").hide();
+        }else{
+          $("#agregar").show();
+        }
+      
+    });
+  });
+</script>
 </html>

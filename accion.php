@@ -227,7 +227,7 @@ $vigente = $row['VIGENTE'];
                   <th style="width: 10%">Detalle</th>
                   <?php if ($vigente == 'S'){?>
                   <th style="width: 10%">Editar</th>
-                  <!-- <th style="width: 10%">Eliminar</th> -->
+                  <th style="width: 10%">Eliminar</th>
                   <?php }?>
                 </tr>
                 </thead>
@@ -254,7 +254,7 @@ $vigente = $row['VIGENTE'];
                echo'
                <td><a class="fancy btn btn-default" href="form_new_cumplimiento.php?id_meta='.$id_meta[$i].'"><i class="fa fa-info"></i></a></td>
            		 <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_meta[$i].'"><i class="fa fa-pencil"></i></a></td>
-  		        ';
+                <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_meta[$i].'"><i class="fa fa-trash-o"></i></a></td>';
                }
                echo' 
                 </tr>';

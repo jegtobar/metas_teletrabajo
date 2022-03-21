@@ -31,13 +31,13 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
 $query = "SELECT codarea,
                  nombre
             FROM mte_areas
-           WHERE codarea_depende LIKE '%,".$codarea.",%'";
+           WHERE usuarios LIKE '%".$usuario."%'";
 
 $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     
-$codareapri = $row['CODAREA'];
+$codarea = $row['CODAREA'];
 $area = $row['NOMBRE'];
 
 
@@ -48,14 +48,24 @@ if(!isset($_GET['id_periodo'])){
 }
 
 $query = "SELECT a.id_meta,
-                 NVL(b.id_cumplimiento,0) AS id_cumplimiento,
-                 a.nombre,
-                 NVL(b.cantidad,0) AS cantidad,
-                 a.meta
+                 a.nombre, 
+                 a.tipo,
+                 NVL(SUM(b.cantidad),0) AS cantidad,
+                 a.meta,
+                 a.poa,
+                 a.activa,
+                 a.modalidad
             FROM mte_metas a
-            LEFT JOIN mte_cumplimientos b ON a.id_meta = b.id_meta AND b.codarea = ".$codarea." AND b.usuario = '".$usuario."'
-           WHERE a.CODAREA = ".$codareapri."
+            LEFT JOIN mte_cumplimientos b ON a.id_meta = b.id_meta
+           WHERE a.codarea = ".$codarea."
                  AND a.id_periodo = ".$periodo."
+           GROUP BY a.id_meta,
+                 a.nombre,
+                 a.tipo,
+                 a.meta,
+                 a.poa,
+                 a.activa,
+                 a.modalidad
         ORDER BY id_meta DESC";
 
 $stid = oci_parse($conn, $query);
@@ -63,8 +73,14 @@ oci_execute($stid, OCI_DEFAULT);
 
 while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
     $id_meta[] = $row['ID_META'];
-    $id_cumplimiento[] = $row['ID_CUMPLIMIENTO'];
     $nombre[] = $row['NOMBRE'];
+    $poa[]=$row['POA'];
+    $activa[]=$row['ACTIVA'];
+    $modalidad[]=$row['MODALIDAD'];
+    if($row['TIPO'] == 'T'){$tipo[] = 'Teletrabajo';}
+    if($row['TIPO'] == 'P'){$tipo[] = 'Presencial';}
+    if($row['TIPO'] == 'M'){$tipo[] = 'Mixto';}
+    
     $cantidad[] = $row['CANTIDAD'];
     $meta[] = $row['META'];
 }
@@ -107,6 +123,9 @@ $vigente = $row['VIGENTE'];
     <link rel="stylesheet" href="vendor/sweetalert/lib/sweet-alert.css" />
     
   <link rel="stylesheet" href="dist/jquery.fancybox.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
  <style>
  #fancybox-wrap {
   position: absolute;
@@ -116,7 +135,7 @@ $vigente = $row['VIGENTE'];
 </head>
 <body class="hold-transition skin-blue layout-top-nav">
 
-<div class="wrapper">
+<div class="wrapper" id="app">
 
   <header class="main-header" style="height: 75px;background-color: #A2CE39">
     <nav class="navbar navbar-static-top" style="background-color: #A2CE39">
@@ -143,7 +162,7 @@ $vigente = $row['VIGENTE'];
         <div class="col-md-1"></div>
         <div class="col-md-10">
         
-          <div class="box box-success">
+          <div class="box box-warning">
             <div class="box-header with-border">
              <div class="col-md-6">
              <h1 style="font-size: 28px">
@@ -180,43 +199,58 @@ $vigente = $row['VIGENTE'];
                  	<label style="color: white">ver</label>
                  	<button type="submit" class="btn btn-primary">Ver datos</button>
                  </div>
+                 <div class="box-footer">
+                    <a class="fancy  btn btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
+                 </div>
 
 				</form>              
              </div>
-             <!-- 
              			<div class="box-footer">
-             			<?php if ($vigente == 'S'){?>
-                        	<a class="fancy btn btn-warning mascara add" href="form_cumplimiento.php">Agregar</a>
-                        <?php }?>
+
                       </div>
                         
-              -->
+             
              
              <div class="box-body">
               <table id="tabla" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>Nombre</th>
+                  <th>Modalidad</th>
+                  <th>Tipo</th>
+                  <th>POA</th>
+                  <th>Activa</th>
                   <th>Meta</th>
                   <th>Realizado</th>
+
                   <?php if ($vigente == 'S'){?>
-                  <th style="width: 10%">Agregar</th>
-                  <th style="width: 10%">Eliminar</th>
+                  <th style="width: 10%">Ingresar</th>
                   <?php }?>
                 </tr>
                 </thead>
                 <tbody>
             <?php
             $i=0; while ($i < count($id_meta)){
+              if($poa[$i] == 1){$poa[$i]  = 'Si';}else{$poa[$i]  = 'No';}
+              if($activa[$i] == 1){$activa[$i] = 'Si';}else{$activa[$i] = 'No';}
+              if($modalidad[$i] == 'R'){$modalidad[$i] = 'Regular';}
+              if($modalidad[$i] == 'T'){$modalidad[$i] = 'Temporal';}
+              if($modalidad[$i] == 'A'){$modalidad[$i] = 'Adicional';}
                echo'
                 <tr>
-                 <td>'.$nombre[$i].'</td>
-                 <td>'.$meta[$i].'</td>                 
-                 <td><b>'.$cantidad[$i].'</b></td>';
+                  <td>'.$nombre[$i].'</td>
+           		    <td>'.$tipo[$i].'</td>
+                  <td>'.$modalidad[$i].'</td>
+                  <td>'.$poa[$i].'</td>
+                  <td>'.$activa[$i].'</td>
+                  <td>'.$meta[$i].'</td>
+                  <td>'.$cantidad[$i].'</td>
+                  
+                 ';
                if ($vigente == 'S'){
                echo'
-           		 <td><a class="fancy btn btn-success" href="form_cumplimiento.php?id_cumplimiento='.$id_cumplimiento[$i].'&id_meta='.$id_meta[$i].'"><i class="fa fa-plus"></i></a></td>
-  		         <td><a class="fancy btn btn-danger" href="cumplimiento_borrar.php?id_cumplimiento='.$id_cumplimiento[$i].'"><i class="fa fa-trash-o"></i></a></td>';
+               <td><a class="fancy btn btn-success" href="form_new_cumplimiento.php?id_meta='.$id_meta[$i].'"><i class="fa fa-plus"></i></a></td>';
+
                }
                echo' 
                 </tr>';
@@ -242,12 +276,11 @@ $vigente = $row['VIGENTE'];
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="vendor/jquery-ui/jquery-ui.min.js"></script>
 <script src="vendor/slimScroll/jquery.slimscroll.min.js"></script>
-<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
 
 <script src="vendor/metisMenu/dist/metisMenu.min.js"></script>
 <script src="vendor/iCheck/icheck.min.js"></script>
 <script src="vendor/sparkline/index.js"></script>
-<script src="dist/jquery.fancybox.min.js"></script>
 <script src="vendor/sweetalert/lib/sweet-alert.min.js"></script>
 <script src="vendor/peity/jquery.peity.min.js"></script>
 
@@ -258,6 +291,7 @@ $vigente = $row['VIGENTE'];
 <script src="vendor/jquery-steps/build/jquery.steps.js"></script>
 <script src="scripts/homer.js"></script>
 <script src="dist/jquery.fancybox.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 
 <!-- Plugins para Datatables -->
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
@@ -286,6 +320,10 @@ $vigente = $row['VIGENTE'];
           "pageLength": 25
 	    }); 
   });
+  
+</script>
+
+<script>
   
 </script>
 <!-- Fin de plugins para Datatables -->

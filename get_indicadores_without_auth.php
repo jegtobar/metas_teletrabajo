@@ -75,7 +75,9 @@
         
         }
     }
-
+    if($rendSemanal>100){
+        $rendSemanal=100;
+        }
     $rendimiento_semanal = [
         'text_style' => $colorText,
         'bar_style' => $bar_style,
@@ -135,6 +137,10 @@
     
     }
 
+    if($rendPoaSemanal>100){
+        $rendPoaSemanal=100;
+        }
+
     $rendimiento_poa = [
         'text_style' => $colorText,
         'bar_style' => $bar_style,
@@ -188,7 +194,9 @@
             $bar_style = 'progress-bar-warning';
             $text_style = 'text-warning';
         }
-
+        if($seccion["cumplimientop"] >100){
+            $seccion["cumplimientop"] =100;
+            }
         $seccion['bar_style'] = $bar_style;
         $seccion['text_style'] = $text_style;
 

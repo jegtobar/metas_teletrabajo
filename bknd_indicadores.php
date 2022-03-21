@@ -117,6 +117,7 @@ $rendPoaSemanal = $realizadoPoa ? number_format((float)(($realizadoPoa/$metaPoa)
 
 
 
+
 if ($rendPoaSemanal<=50){
      $colorText = 'text-danger';
 $rendimientoPoa = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
@@ -126,6 +127,11 @@ $rendimientoPoa = '<div class="progress-bar progress-bar-warning progress-bar-st
 }else{
      $colorText = 'text-success';
 $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
+}
+if($rendPoaSemanal>=100){
+     $colorText = 'text-success';
+$rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:100%">';
+$rendPoaSemanal=100;
 }
 
 /*Fin indicador POA */
@@ -152,10 +158,8 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
 }
 
 foreach ($secciones as &$seccion) {
-
-    $cumplimientoDetalle = ($seccion["REALIZADO"]/$seccion["META"])*100;
-
-    $seccion['cumplimientop']= $cumplimientoDetalle;
+     $cumplimientoDetalle = $seccion ? number_format((float)(($seccion["REALIZADO"]/$seccion["META"])*100), 2, '.', '') : 0;
+     $seccion['cumplimientop']= $cumplimientoDetalle;
 }
 
 // Buscar el detalle de metas por POA, Actividades Regulares y Adicionales

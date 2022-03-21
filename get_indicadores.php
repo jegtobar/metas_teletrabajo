@@ -99,21 +99,21 @@
             $rendimientoSemanal = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
             
         }else{
-
             $colorText = 'text-success';
             $bar_style = 'progress-bar-success';
-
             $rendimientoSemanal = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
-        
         }
     }
+        if($rendSemanal>100){
+        $rendSemanal=100;
+        }
 
     $rendimiento_semanal = [
         'text_style' => $colorText,
         'bar_style' => $bar_style,
         'rendimiento' => $rendSemanal
     ];
-
+ 
     $response['rendimiento_semanal'] = $rendimiento_semanal;
 
     /*Fin indicador Rendimiento Semanal */
@@ -166,6 +166,9 @@
         $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
     
     }
+    if($rendPoaSemanal>100){
+        $rendPoaSemanal=100;
+        }
 
     $rendimiento_poa = [
         'text_style' => $colorText,
@@ -173,8 +176,11 @@
         'rendimiento' => $rendPoaSemanal
     ];
 
+
+
     $response['rendimiento_poa'] = $rendimiento_poa;
 
+   
     /*Fin indicador POA */
 
     /*Indicadores detalle por sección */
@@ -220,7 +226,9 @@
             $bar_style = 'progress-bar-warning';
             $text_style = 'text-warning';
         }
-
+        if($seccion["cumplimientop"] >100){
+            $seccion["cumplimientop"] =100;
+            }
         $seccion['bar_style'] = $bar_style;
         $seccion['text_style'] = $text_style;
 
