@@ -10,6 +10,8 @@ oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $periodo_vigente = $row['PERIODO_VIGENTE'];
 
+
+
 $query = "SELECT id_periodo,
                  to_char(fecha_inicio,'DD-MM-YYYY') as inicio,
                  to_char(fecha_fin,'DD-MM-YYYY') as fin
@@ -28,17 +30,15 @@ while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
     
 }
 
-$query = "SELECT codarea,
-                 nombre
-            FROM mte_areas
-           WHERE usuarios LIKE '%".$usuario."%'";
+
+$query = "SELECT codarea
+            FROM rh_empleados
+           WHERE usuario LIKE '%".$usuario."%'";
 
 $stid = oci_parse($conn, $query);
 oci_execute($stid, OCI_DEFAULT);
 $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-    
 $codarea = $row['CODAREA'];
-$area = $row['NOMBRE'];
 
 
 if(!isset($_GET['id_periodo'])){
@@ -48,24 +48,25 @@ if(!isset($_GET['id_periodo'])){
 }
 
 $query = "SELECT a.id_meta,
-                 a.nombre, 
-                 a.tipo,
-                 NVL(SUM(b.cantidad),0) AS cantidad,
-                 a.meta,
-                 a.poa,
-                 a.activa,
-                 a.modalidad
-            FROM mte_metas a
-            LEFT JOIN mte_cumplimientos b ON a.id_meta = b.id_meta
-           WHERE a.codarea = ".$codarea."
+a.nombre, 
+a.tipo,
+b.realizado AS cantidad,
+b.meta,
+a.poa,
+a.activa,
+a.modalidad
+FROM mte_metas a
+LEFT JOIN mte_metas_detalle b ON a.id_meta = b.id_meta
+           WHERE b.codarea = ".$codarea."
                  AND a.id_periodo = ".$periodo."
-           GROUP BY a.id_meta,
+                 GROUP BY a.id_meta,
                  a.nombre,
                  a.tipo,
-                 a.meta,
+                 b.meta,
                  a.poa,
                  a.activa,
-                 a.modalidad
+                 a.modalidad,
+                 b.realizado
         ORDER BY id_meta DESC";
 
 $stid = oci_parse($conn, $query);
@@ -96,7 +97,6 @@ $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 $vigente = $row['VIGENTE'];
 
 ?>
-
 <!DOCTYPE html>
 <html>
 <link rel="shortcut icon" href="img/docs.png">
@@ -199,9 +199,7 @@ $vigente = $row['VIGENTE'];
                  	<label style="color: white">ver</label>
                  	<button type="submit" class="btn btn-primary">Ver datos</button>
                  </div>
-                 <div class="box-footer">
-                    <a class="fancy  btn btn-warning mascara add" href="metas_indicadores.php" target="_blank">Indicadores</a>
-                 </div>
+
 
 				</form>              
              </div>
@@ -249,7 +247,7 @@ $vigente = $row['VIGENTE'];
                  ';
                if ($vigente == 'S'){
                echo'
-               <td><a class="fancy btn btn-success" href="form_new_cumplimiento.php?id_meta='.$id_meta[$i].'"><i class="fa fa-plus"></i></a></td>';
+               <td><a class="fancy btn btn-success" href="form_cumplimientos_secciones.php?id_meta='.$id_meta[$i].'&cod_area='.$codarea.'"><i class="fa fa-plus"></i></a></td>';
 
                }
                echo' 

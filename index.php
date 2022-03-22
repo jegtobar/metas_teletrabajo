@@ -90,19 +90,21 @@ foreach ($codarea as $area){
                      AND a.id_periodo = ".$periodo."
             GROUP BY a.codarea";
     */
-    $query = "SELECT  SUM(realizado) AS realizado,
-                      SUM(meta) AS meta,
-                      ROUND((SUM(realizado) / SUM(meta)) * 100) AS porcentaje,
-                      codarea   
-               FROM  (                  
-                      SELECT (SELECT SUM(cantidad) FROM mte_cumplimientos WHERE id_meta = a.id_meta) AS realizado,
-                              a.meta,
-                              a.codarea
-                        FROM  mte_metas a
-                       WHERE  a.codarea = ".$area."
-                              AND a.id_periodo = ".$periodo."
-                     )
-           GROUP BY  codarea";
+    $query = "SELECT  realizado,
+    SUM(meta) AS meta,
+    ROUND((realizado / SUM(meta)) * 100) AS porcentaje,
+    codarea   
+    FROM  (                  
+        SELECT (select sum(realizado)
+                  from mte_metas_detalle
+                  where id_meta in (select id_meta from mte_metas where codarea = ".$area." and id_periodo = ".$periodo." and activa=1 and modalidad <> 'A')) AS realizado,
+                a.meta,
+                a.codarea
+          FROM  mte_metas a
+        WHERE  a.codarea = ".$area."
+                AND a.id_periodo = ".$periodo."
+      )
+    GROUP BY  codarea,realizado";
     
     
     $stid = oci_parse($conn, $query);

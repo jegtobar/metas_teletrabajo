@@ -118,7 +118,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                     <div class="panel-heading"> 
-                        <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
+                    <h4 class="font-light m-b-xs" style="margin-top: 12px; cursor: pointer;" v-on:click="fetchDetailAll()">
                             Secciones
                         </h4>
                     </div>
@@ -346,11 +346,38 @@
                     this.metas_regulares = data.metas_regulares
                     this.metas_adicionales = data.metas_adicionales
                 })
+            },
+
+            fetchDetailAll(){
+                const queryString = window.location.search;
+                console.log(queryString);
+                const urlParams = new URLSearchParams(queryString);
+                const codarea = urlParams.get('area')
+                const id_periodo = urlParams.get('id_periodo')
+
+                fetch('get_metas_all.php', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        codarea: codarea,
+                        id_periodo: id_periodo
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                this.metas_poa = data.metas_poa
+                this.metas_regulares = data.metas_regulares
+                this.metas_adicionales = data.metas_adicionales
+                })
             }
 
         },
         mounted(){
             this.fetchData()
+            this.fetchDetailAll()
         }
     })
 

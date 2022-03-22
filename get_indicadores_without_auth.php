@@ -20,6 +20,56 @@
 
     $codarea = $data->codarea;
 
+    /*Obtener la lista de todas las metas */
+
+    $query = "SELECT a.id_meta,
+                 a.nombre, 
+                 a.tipo,
+                 NVL(SUM(b.realizado),0) AS cantidad,
+                 a.meta,
+                 a.poa,
+                 a.activa,
+                 a.modalidad
+            FROM mte_metas a
+            LEFT JOIN mte_metas_detalle b ON a.id_meta = b.id_meta
+           WHERE a.codarea = ".$codarea."
+                 AND a.id_periodo = ".$periodo_vigente."
+           GROUP BY a.id_meta,
+                 a.nombre,
+                 a.tipo,
+                 a.meta,
+                 a.poa,
+                 a.activa,
+                 a.modalidad
+        ORDER BY id_meta DESC";
+
+        $stid = oci_parse($conn, $query);
+        oci_execute($stid, OCI_DEFAULT);
+        $lista_general = [];
+        while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+            if($row['TIPO'] == 'T'){$tipo = 'Teletrabajo';}
+            if($row['TIPO'] == 'P'){$tipo = 'Presencial';}
+            if($row['TIPO'] == 'M'){$tipo = 'Mixto';}
+            if($row['MODALIDAD'] == 'R'){$modalidad = 'Regular';}
+            if($row['MODALIDAD'] == 'T'){$modalidad = 'Temporal';}
+            if($row['MODALIDAD'] == 'A'){$modalidad = 'Adicional';}
+
+            $listaMetasTable = [
+                'descripcion_meta' =>  $row['NOMBRE'],
+                'modalidad_meta' => $row['MODALIDAD'],
+                'tipo_meta' => $tipo,
+                'modalidad_meta' => $modalidad,
+                'meta' => $row['META'],
+                'realizado' => $row['CANTIDAD']
+            ];
+            $lista_general[] = $listaMetasTable;
+        }
+
+    
+        $response['lista_metas_general'] = $lista_general;
+
+    /*Fin de obtener la lista de todas las metas */
+
     /*Indicador Rendimiento Semanal*/
     $query = "  SELECT SUM(a.meta)AS METATOTAL
                 FROM mte_metas a

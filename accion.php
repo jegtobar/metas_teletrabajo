@@ -47,25 +47,28 @@ if(!isset($_GET['id_periodo'])){
     $periodo = $_GET['id_periodo'];
 }
 
+
 $query = "SELECT a.id_meta,
-                 a.nombre, 
-                 a.tipo,
-                 NVL(SUM(b.cantidad),0) AS cantidad,
-                 a.meta,
-                 a.poa,
-                 a.activa,
-                 a.modalidad
-            FROM mte_metas a
-            LEFT JOIN mte_cumplimientos b ON a.id_meta = b.id_meta
+a.nombre, 
+a.tipo,
+SUM(b.realizado)AS cantidad,
+a.meta,
+a.poa,
+a.activa,
+a.modalidad
+FROM mte_metas a
+LEFT JOIN mte_metas_detalle b ON a.id_meta = b.id_meta
            WHERE a.codarea = ".$codarea."
                  AND a.id_periodo = ".$periodo."
-           GROUP BY a.id_meta,
+                 GROUP BY 
+                 a.id_meta,
                  a.nombre,
                  a.tipo,
                  a.meta,
                  a.poa,
                  a.activa,
-                 a.modalidad
+                 a.modalidad,
+                 cantidad
         ORDER BY id_meta DESC";
 
 $stid = oci_parse($conn, $query);
@@ -224,10 +227,12 @@ $vigente = $row['VIGENTE'];
                   <th>Activa</th>
                   <th>Meta</th>
                   <th>Realizado</th>
-                  <th style="width: 10%">Detalle</th>
                   <?php if ($vigente == 'S'){?>
                   <th style="width: 10%">Editar</th>
-                  <th style="width: 10%">Eliminar</th>
+                  <?php }?>
+                  <th style="width: 10%">Cumplimiento</th>
+                  <?php if ($vigente == 'S'){?>
+                  <!-- <th style="width: 10%">Eliminar</th> -->
                   <?php }?>
                 </tr>
                 </thead>
@@ -252,14 +257,15 @@ $vigente = $row['VIGENTE'];
                  ';
                if ($vigente == 'S'){
                echo'
+               <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_meta[$i].'"><i class="fa fa-pencil"></i></a></td>
                <td><a class="fancy btn btn-default" href="form_new_cumplimiento.php?id_meta='.$id_meta[$i].'"><i class="fa fa-info"></i></a></td>
-           		 <td><a class="fancy btn btn-default" href="form_edit.php?id_meta='.$id_meta[$i].'"><i class="fa fa-pencil"></i></a></td>
-                <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_meta[$i].'"><i class="fa fa-trash-o"></i></a></td>';
+               ';
                }
                echo' 
                 </tr>';
                   $i++;}
             ?>
+             <!-- <td><a class="fancy btn btn-danger" href="accion_borrar.php?id_meta='.$id_meta[$i].'"><i class="fa fa-trash-o"></i></a></td> -->
                 </tbody>
               </table>
             </div>

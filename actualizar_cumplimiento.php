@@ -37,39 +37,6 @@ if (isset($_POST['guardarCumplimiento'])){
     if($mensaje){
         
     	oci_commit($conn);
-
-        $query = "INSERT INTO MTE_CUMPLIMIENTOS (ID_CUMPLIMIENTO,
-    		                                 ID_META,
-    						                 USUARIO,
-    		                                 FECHA,
-    		                                 CANTIDAD,
-    		                                 CODAREA)
-    		                         VALUES (SEQ_MTE_CUMPLIMIENTOS.NEXTVAL,
-    		           		                 ".$idMeta.",
-    		           		                 '".$usuario."',
-    		           		                 SYSDATE,
-    		           		                 ".$cumplimientoDetalle.",
-    		           		                 ".$codArea.")";
-    
-        $stid = oci_parse($conn, $query);
-        $mensaje = oci_execute($stid, OCI_DEFAULT);
-        
-        if($mensaje){
-        
-            oci_commit($conn);
-            
-        } else {
-            
-            $e = oci_error($stid);
-            print htmlentities($e['message']);
-            print "\n<pre>\n";
-            print htmlentities($e['sqltext']);
-            printf("\n%".($e['offset']+1)."s", "^");
-            print  "\n</pre>\n";
-            
-            die();
-            
-        }
         $idMetaDetalle=[];
         $idMetaDetalle['id']=$_POST['metaIdDetalle'];
     	$grabo = 'S';
@@ -84,7 +51,7 @@ if (isset($_POST['guardarCumplimiento'])){
            
         
             $query = "UPDATE MTE_METAS_DETALLE
-                  SET REALIZADO = (SELECT (realizado +".$realizado." ) from MTE_METAS_DETALLE where ID_META_DETALLE =".$idMeta.")
+                  SET REALIZADO = ".$realizado."
 		        WHERE ID_META_DETALLE = ".$idMeta;
                 $stid = oci_parse($conn, $query);
                 $msj = oci_execute($stid, OCI_DEFAULT);

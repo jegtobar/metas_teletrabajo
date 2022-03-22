@@ -115,8 +115,8 @@
 
         <div class="col-md-12">
             <div class="panel panel-default">
-                    <div class="panel-heading"> 
-                        <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
+                    <div class="panel-heading" > 
+                        <h4 class="font-light m-b-xs" style="margin-top: 12px; cursor: pointer;" v-on:click="fetchDetailAll()">
                             Secciones
                         </h4>
                     </div>
@@ -268,8 +268,6 @@
                 </div>
             </div>
         </div>
-
-
 </div>
 
 <!-- Vendor scripts -->
@@ -287,6 +285,7 @@
         el: '#app',
         data: {
             message: 'Hello Vue!',
+            lista_metas_general: [],
             secciones: [],
             metas_poa: [],
             metas_regulares: [],
@@ -304,7 +303,7 @@
 
                 const codarea = urlParams.get('area')
                 const id_periodo = urlParams.get('id_periodo')
-
+     
                 fetch('get_indicadores_without_auth.php', {
                     method: 'POST',
                     mode: 'no-cors',
@@ -318,6 +317,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    this.lista_metas_general = data.lista_metas_general
                     this.rendimiento_poa = data.rendimiento_poa
                     this.rendimiento_semanal = data.rendimiento_semanal
                     this.secciones = data.secciones
@@ -349,11 +349,39 @@
                     this.metas_regulares = data.metas_regulares
                     this.metas_adicionales = data.metas_adicionales
                 })
-            }
+            },
 
+            fetchDetailAll(){
+
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const codarea = urlParams.get('area')
+                const id_periodo = urlParams.get('id_periodo')
+
+                
+               
+            fetch('get_metas_all_without_auth.php', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    codarea: codarea,
+                    id_periodo: id_periodo
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.metas_poa = data.metas_poa
+                this.metas_regulares = data.metas_regulares
+                this.metas_adicionales = data.metas_adicionales
+            })
+            }
         },
         mounted(){
             this.fetchData()
+            this.fetchDetailAll()
         }
     })
 
