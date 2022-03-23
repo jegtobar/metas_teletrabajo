@@ -229,8 +229,8 @@ $vigente = $row['VIGENTE'];
                   <th>Realizado</th>
                   <?php if ($vigente == 'S'){?>
                   <th style="width: 10%">Editar</th>
-                  <?php }?>
                   <th style="width: 10%">Cumplimiento</th>
+                  <?php }?>
                   <?php if ($vigente == 'S'){?>
                   <!-- <th style="width: 10%">Eliminar</th> -->
                   <?php }?>

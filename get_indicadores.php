@@ -108,7 +108,9 @@ GROUP BY a.id_meta,
     /*Indicador Rendimiento Semanal*/
     $query = "  SELECT SUM(a.meta)AS METATOTAL
                 FROM mte_metas a
-                WHERE a.activa=1 and a.codarea = ".$codarea."
+                WHERE a.activa=1 
+                a.poa = 0 and modalidad <>'A'
+                and a.codarea = ".$codarea."
                     AND a.id_periodo = ".$periodo_vigente;
 
     $stid = oci_parse($conn, $query);
@@ -116,17 +118,16 @@ GROUP BY a.id_meta,
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $metaTotal = $row['METATOTAL'];
 
-    $query = "SELECT SUM(a.cantidad)AS REALIZADO
-                FROM mte_metas a
-                WHERE a.codarea = ".$codarea."
-                    AND a.id_periodo = ".$periodo_vigente;
+    $query = "SELECT sum(realizado)as realizado
+    from mte_metas_detalle
+    where id_meta in (select id_meta from mte_metas where codarea = ".$codarea." and id_periodo = ".$periodo_vigente." and activa=1 and modalidad <> 'A')";
 
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $realizadoTotal = $row['REALIZADO'];
 
-    $rendSemanal = $realizadoTotal ?number_format((float)(($realizadoTotal/$metaTotal)*100), 2, '.', '')  : 0;
+    $rendSemanal = $realizadoTotal ?round(($realizadoTotal/$metaTotal)*100): 0;
 
     if ($rendSemanal < 0){
 
@@ -182,17 +183,16 @@ GROUP BY a.id_meta,
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $metaPoa = $row['METATOTAL'];
 
-    $query = "  SELECT SUM(a.cantidad)AS REALIZADO
-                FROM mte_metas a
-                WHERE a.codarea = ".$codarea."
-                    AND POA=1
-                    AND a.id_periodo = ".$periodo_vigente;
+    $query = "SELECT SUM(B.REALIZADO) AS REALIZADO
+    FROM MTE_METAS_DETALLE B
+    WHERE B.ID_META IN (SELECT A.ID_META FROM MTE_METAS A WHERE a.codarea = ".$codarea." AND A.POA=1  AND a.id_periodo = ".$periodo_vigente." AND A.ACTIVA=1)";
+
 
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $realizadoPoa = $row['REALIZADO'];
-    $rendPoaSemanal = $realizadoPoa ? number_format((float)(($realizadoPoa/$metaPoa)*100), 2, '.', '') : 0;
+    $rendPoaSemanal = $realizadoPoa ?round(($realizadoPoa/$metaPoa)*100): 0;
 
     if ($rendPoaSemanal<=50){
 
@@ -262,9 +262,9 @@ GROUP BY a.id_meta,
 
     foreach ($secciones as &$seccion) {
 
-        $cumplimientoDetalle = ($seccion["REALIZADO"]/$seccion["META"])*100;
+        $cumplimientoDetalle = round(($seccion["REALIZADO"]/$seccion["META"])*100);
 
-        $seccion['cumplimientop']= number_format($cumplimientoDetalle, 2);
+        $seccion['cumplimientop']= $cumplimientoDetalle;
 
         $bar_style = 'progress-bar-success';
         $text_style = 'text-success';

@@ -25,6 +25,11 @@
     <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css" />
 
     <script src="vue/vue.js"></script>
+    <style>
+        .progress {
+            margin-top: 27px;
+        }
+    </style>
 
 </head>
 <body class="fixed-sidebar hide-sidebar">

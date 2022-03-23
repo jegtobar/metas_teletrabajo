@@ -7,6 +7,8 @@ $detalle = [];
 $detalle['meta']=$_POST['metaIdDetalle'];
 $cumplimiento = [];
 $cumplimiento['cumplimiento']=$_POST['ingresarCumplimiento'];
+$nombreUsuario = $_POST['nombreUsuario'];
+
 
 $cumplimientoDetalle = 0;
 foreach ($cumplimiento['cumplimiento'] as $item) {
@@ -51,7 +53,8 @@ if (isset($_POST['guardarCumplimiento'])){
            
         
             $query = "UPDATE MTE_METAS_DETALLE
-                  SET REALIZADO = ".$realizado."
+                  SET REALIZADO = ".$realizado.",
+                      USUARIO = '".$nombreUsuario."'
 		        WHERE ID_META_DETALLE = ".$idMeta;
                 $stid = oci_parse($conn, $query);
                 $msj = oci_execute($stid, OCI_DEFAULT);

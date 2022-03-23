@@ -103,6 +103,8 @@ foreach ($codarea as $area){
           FROM  mte_metas a
         WHERE  a.codarea = ".$area."
                 AND a.id_periodo = ".$periodo."
+                and activa = 1
+                and modalidad <> 'A'
       )
     GROUP BY  codarea,realizado";
     

@@ -31,7 +31,8 @@ if (isset($_REQUEST['id_meta'])){
     $query = "SELECT b.ID_META_DETALLE,
                      a.DESCRIPCION,
                      b.META,
-                     b.REALIZADO
+                     b.REALIZADO,
+                     b.usuario
               FROM MTE_METAS_DETALLE b
               INNER JOIN rh_areas a on a.CODAREA = b.CODAREA
               WHERE ID_META =".$id_meta;
@@ -42,6 +43,7 @@ if (isset($_REQUEST['id_meta'])){
       $dependencia[] = $row['DESCRIPCION'];
       $detalle_meta[] = $row['META'];
       $realizado[] = $row['REALIZADO'];
+      $user[] = $row['USUARIO'];
     }
 
     if(empty($id_detalle)){
@@ -170,7 +172,8 @@ if (isset($_REQUEST['id_meta'])){
                   <th>Sección</th>
                   <th>Meta</th>
                   <th>Realizado</th>
-                  <th>Cumplimiento</th>                 
+                  <th>Usuario</th> 
+                  <th>Actualizar cumplimiento</th>                
                 </tr>
                 </thead>
                 <tbody>
@@ -180,9 +183,10 @@ if (isset($_REQUEST['id_meta'])){
                   echo'
                     <tr>
                     <td>'.$dependencia[$i].'</td>
-                    <td><input type="text" class="text" disabled  value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]"></td>
-                    <td><input type="text" class="text" disabled value="'.$realizado[$i].'" id="cumplimiento" name="cumplimiento[]"></td>
-                    <td><input type="number" class="text"  id="ingresarCumplimiento" name="ingresarCumplimiento[]"></td>';
+                    <td><input type="text" class="text" disabled size="5"  value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]"></td>
+                    <td><input type="text" class="text" disabled size="5" value="'.$realizado[$i].'" id="cumplimiento" name="cumplimiento[]"></td>
+                    <td><input type="text" class="text" disabled size="10" value="'.$user[$i].'" id="usuario"></td>
+                    <td><input type="number" class="text" size="5" id="ingresarCumplimiento" value="'.$realizado[$i].'" name="ingresarCumplimiento[]"></td>';
                     echo' 
                     </tr>';
                       $i++;}
@@ -197,6 +201,7 @@ if (isset($_REQUEST['id_meta'])){
 				      <div class="btn btn-default" id="cerrar">Cancelar</div>
                 <input type="hidden" name="cantidad" value="0">
                 <input type="hidden" name="metaId" value="<?php echo $id_meta;?>">
+                <input type="hidden" name="nombreUsuario" value="<?php echo $usuario ;?>">
                 <?php 
                 if(!empty($id_detalle)){
                   foreach ($id_detalle as $item) {

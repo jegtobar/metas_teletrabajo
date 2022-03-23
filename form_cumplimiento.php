@@ -1,7 +1,8 @@
 <?php 
 
 include '../auth.php';
-
+$cod_area = $_REQUEST['cod_area'];
+$nombreUsuario = $_POST['nombre'];
 if ($_REQUEST['id_cumplimiento'] > 0){
     
     $query = "SELECT a.id_meta,
@@ -106,6 +107,7 @@ if ($_REQUEST['id_cumplimiento'] > 0){
 				<div class="btn btn-default" id="cerrar">Cancelar</div>
                 <button type="submit" class="btn btn-primary" id="prueba" name="prueba">Grabar</button>
                 <input type="hidden" name="id_meta" value="<?php echo $id_meta?>">
+                <input type="hidden" name="nombreUsuario" value="<?php echo $usuario ;?>">
                 <?php if(isset($cumplimiento)){?><input type="hidden" name="update" value="<?php echo $cumplimiento?>"><?php }?>
               </div>
 			</form>

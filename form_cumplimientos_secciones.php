@@ -4,6 +4,7 @@ include '../auth.php';
 
 $cod_area = $_REQUEST['cod_area'];
 
+
 if (isset($_REQUEST['id_meta'])){
     
     $query = "SELECT id_meta,
@@ -199,6 +200,7 @@ if (isset($_REQUEST['id_meta'])){
 				      <div class="btn btn-default" id="cerrar">Cancelar</div>
                 <input type="hidden" name="cantidad" value="0">
                 <input type="hidden" name="metaId" value="<?php echo $id_meta;?>">
+                <input type="hidden" name="nombreUsuario" value="<?php echo $usuario ;?>">
                 <?php 
                 if(!empty($id_detalle)){
                   foreach ($id_detalle as $item) {

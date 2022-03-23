@@ -27,6 +27,11 @@
     <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css" />
 
     <script src="vue/vue.js"></script>
+    <style>
+        .progress {
+            margin-top: 27px;
+        }
+    </style>
 
 </head>
 <body class="fixed-sidebar hide-sidebar">
@@ -66,16 +71,14 @@
 
                 <div class="panel-body">
                 <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-9 text-center">
                             <div class="progress">
-                                
                                 <div :class="'progress-bar ' + rendimiento_semanal.bar_style" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" :style="'min-width: 3em; width: ' + rendimiento_semanal.rendimiento + '%'">
                                     {{ rendimiento_semanal.rendimiento }}%
                                 </div>
-
                             </div>
                         </div>
-                        <div class="col-md-3 text-center">
+                        <div class="col-md-3 text-center ">
                             <h2 :class="rendimiento_semanal.text_style">
                                 {{ rendimiento_semanal.rendimiento }}%
                             </h2>
@@ -97,7 +100,6 @@
                     <div class="row">
                         <div class="col-md-9">
                             <div class="progress">
-
                                 <div :class="'progress-bar ' + rendimiento_poa.bar_style" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" :style="'min-width: 3em; width: ' + rendimiento_poa.rendimiento + '%'">
                                     {{ rendimiento_poa.rendimiento }}%
                                 </div>
@@ -118,7 +120,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                     <div class="panel-heading"> 
-                    <h4 class="font-light m-b-xs" style="margin-top: 12px; cursor: pointer;" v-on:click="fetchDetailAll()">
+                        <h4 class="font-light m-b-xs" style="margin-top: 12px; cursor: pointer;" v-on:click="fetchDetailAll()">
                             Secciones
                         </h4>
                     </div>
