@@ -71,6 +71,21 @@ if (isset($_REQUEST['id_meta'])){
         $arreglo['descripcion'] = $row['DESCRIPCION'];
         $data[]=$arreglo;
         }
+      if (empty($data)){
+        $query ="SELECT codarea,descripcion
+        FROM RH_AREAS
+        WHERE CODAREA IN(SELECT CODAREA FROM RH_EMPLEADOS WHERE DEPENDE='".$nit."')";
+        $stid = oci_parse($conn, $query);
+        oci_execute($stid, OCI_DEFAULT);
+        $data=[];
+        while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+          $arreglo=[];
+          $arreglo['codarea'] = $row['CODAREA'];
+          $arreglo['descripcion'] = $row['DESCRIPCION'];
+          $data[]=$arreglo;
+          }
+      }
+      
 }
 
 ?>

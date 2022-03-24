@@ -64,6 +64,10 @@ $query = "SELECT b.ID_META_DETALLE,
     
 }
 
+
+
+
+
 if (isset($_POST['guardarMeta'])){
    
   
@@ -93,7 +97,7 @@ if (isset($_POST['guardarMeta'])){
        $grabo = 'S';
        $i=0;
 
-       $query = "SELECT  META,CODAREA
+       $query = "SELECT  META,CODAREA,ID_PERIODO
        FROM  MTE_METAS
        WHERE id_meta = ".$idMetaPadre;
        $stid = oci_parse($conn, $query);
@@ -101,6 +105,7 @@ if (isset($_POST['guardarMeta'])){
        $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
        $metaActual = $row['META'];
        $cod_area_parent = $row['CODAREA'];
+       $id_periodo = $row['ID_PERIODO'];
 
        $metaT = 0;
        $l=0;
@@ -119,7 +124,8 @@ if (isset($_POST['guardarMeta'])){
        
            $query = "UPDATE MTE_METAS_DETALLE
                  SET META = $meta,
-                     COD_AREA_PARENT = $cod_area_parent
+                     COD_AREA_PARENT = $cod_area_parent,
+                     ID_PERIODO = $id_periodo
                WHERE ID_META_DETALLE = ".$idMeta;
                $stid = oci_parse($conn, $query);
                $msj = oci_execute($stid, OCI_DEFAULT);

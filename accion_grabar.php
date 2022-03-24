@@ -99,14 +99,16 @@ if($mensaje){
                                             FECHA,
                                             USUARIO,
                                             REALIZADO,
-                                            COD_AREA_PARENT)
+                                            COD_AREA_PARENT,
+                                            ID_PERIODO)
                                             VALUES($idMeta,
                                                     $item,
                                                     $meta,
                                                     SYSDATE,
                                                     '".$usuario."',
                                                     ".$realizado.",
-                                                    $codarea
+                                                    ".$codarea.",
+                                                    ".$id_periodo."
                                             )";
                                     
         $stid = oci_parse($conn, $query);

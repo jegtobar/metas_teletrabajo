@@ -134,8 +134,8 @@
         'text_style' => $colorText,
         'bar_style' => $bar_style,
         'rendimiento' => $rendSemanal,
-        'meta'=>$metaTotal,
-        'realizado'=>$realizadoTotal
+        'meta'=>number_format($metaTotal),
+        'realizado'=>number_format($realizadoTotal)
     ];
 
     $response['rendimiento_semanal'] = $rendimiento_semanal;
@@ -199,8 +199,8 @@
         'text_style' => $colorText,
         'bar_style' => $bar_style,
         'rendimiento' => $rendPoaSemanal,
-        'meta'=>$metaPoa,
-        'realizado'=>$realizadoPoa
+        'meta'=>number_format($metaPoa),
+        'realizado'=>number_format($realizadoPoa)
     ];
 
     $response['rendimiento_poa'] = $rendimiento_poa;
