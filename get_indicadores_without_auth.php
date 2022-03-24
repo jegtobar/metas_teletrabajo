@@ -133,7 +133,9 @@
     $rendimiento_semanal = [
         'text_style' => $colorText,
         'bar_style' => $bar_style,
-        'rendimiento' => $rendSemanal
+        'rendimiento' => $rendSemanal,
+        'meta'=>$metaTotal,
+        'realizado'=>$realizadoTotal
     ];
 
     $response['rendimiento_semanal'] = $rendimiento_semanal;
@@ -196,12 +198,34 @@
     $rendimiento_poa = [
         'text_style' => $colorText,
         'bar_style' => $bar_style,
-        'rendimiento' => $rendPoaSemanal
+        'rendimiento' => $rendPoaSemanal,
+        'meta'=>$metaPoa,
+        'realizado'=>$realizadoPoa
     ];
 
     $response['rendimiento_poa'] = $rendimiento_poa;
 
     /*Fin indicador POA */
+
+    /*PORCENTAJE GLOBAL DE RENDIMIENTO */
+    $realizadoGlobal = $realizadoTotal + $realizadoPoa;
+    $metaGlobal = $metaTotal + $metaPoa;
+    $rendimiento = round((( $realizadoGlobal/$metaGlobal)*100));
+    if ($rendPoaSemanal<=50){
+        $colorText = 'text-danger';
+    }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
+        $colorText = 'text-warning';
+    }else{
+        $colorText = 'text-success';
+    }
+
+    $rendimiento_global = [
+        'rendimiento'=>$rendimiento,
+        'text_style'=>$colorText
+    ];
+    $response['rendimiento_global'] = $rendimiento_global;
+    /*FIN PORCENTAJE GLOBAL RENDIMIENTO */
+
 
     /*Indicadores detalle por sección */
 

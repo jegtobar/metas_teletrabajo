@@ -444,7 +444,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre[$i];?></h3>
-              		<h1 class="widget-user-username" <?php if($porcentaje[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
+              		<!-- <h1 class="widget-user-username" <?php if($porcentaje[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1> -->
                 </div>
               	<div class="row">
               	
@@ -474,7 +474,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
         <?php $i++; }?>
 
         <?php $i=0; foreach($codarea2 as $cu){?>
-		<a href="metas_indicadores_dashboard.php?area=<?php echo $cu;?>&id_periodo=<?php echo $periodo;?>" class="fancy" style="color: black;">
+		    <a href="metas_indicadores_dashboard.php?area=<?php echo $cu;?>&id_periodo=<?php echo $periodo;?>" class="fancy" style="color: black;">
         <div class="col-md-3">
           <div class="box box-widget widget-user text-center" style="height:375px; border-radius: 25px;">
               
@@ -487,7 +487,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre2[$i];?></h3>
-              		<h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1>
+              		<!-- <h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1> -->
                 </div>
               	<div class="row">
               	

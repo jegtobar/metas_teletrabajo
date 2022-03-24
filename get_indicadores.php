@@ -62,17 +62,17 @@
      a.poa,
      a.activa,
      a.modalidad
-FROM mte_metas a
-LEFT JOIN mte_metas_detalle b ON a.id_meta = b.id_meta
-WHERE a.codarea = ".$codarea."
-     AND a.id_periodo = ".$periodo_vigente."
-GROUP BY a.id_meta,
-     a.nombre,
-     a.tipo,
-     a.meta,
-     a.poa,
-     a.activa,
-     a.modalidad
+        FROM mte_metas a
+        LEFT JOIN mte_metas_detalle b ON a.id_meta = b.id_meta
+        WHERE a.codarea = ".$codarea."
+            AND a.id_periodo = ".$periodo_vigente."
+        GROUP BY a.id_meta,
+            a.nombre,
+            a.tipo,
+            a.meta,
+            a.poa,
+            a.activa,
+            a.modalidad
         ORDER BY id_meta DESC";
 
         $stid = oci_parse($conn, $query);
@@ -107,11 +107,12 @@ GROUP BY a.id_meta,
     
     /*Indicador Rendimiento Semanal*/
     $query = "  SELECT SUM(a.meta)AS METATOTAL
-                FROM mte_metas a
-                WHERE a.activa=1 
-                a.poa = 0 and modalidad <>'A'
-                and a.codarea = ".$codarea."
-                    AND a.id_periodo = ".$periodo_vigente;
+    FROM mte_metas a
+    WHERE a.activa=1 
+    and a.poa = 0
+    and modalidad <>'A'
+    and a.codarea = ".$codarea."
+    and a.id_periodo = ".$periodo_vigente;
 
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
@@ -120,51 +121,58 @@ GROUP BY a.id_meta,
 
     $query = "SELECT sum(realizado)as realizado
     from mte_metas_detalle
-    where id_meta in (select id_meta from mte_metas where codarea = ".$codarea." and id_periodo = ".$periodo_vigente." and activa=1 and modalidad <> 'A')";
+    where id_meta in (select id_meta from mte_metas where codarea = ".$codarea." and id_periodo = ".$periodo_vigente." and activa=1 and poa=0 and modalidad <> 'A')";
 
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $realizadoTotal = $row['REALIZADO'];
 
-    $rendSemanal = $realizadoTotal ?round(($realizadoTotal/$metaTotal)*100): 0;
+    $rendSemanal = $realizadoTotal ?round((($realizadoTotal/$metaTotal)*100)) : 0;
 
     if ($rendSemanal < 0){
 
-        $colorText = 'text-danger';
-        $bar_style = 'progress-bar-danger';
+    $colorText = 'text-danger';
+    $bar_style = 'progress-bar-danger';
 
+    $rendimientoSemanal = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">';
 
-   
     }else{
 
-        if ($rendSemanal<=50){
+    if ($rendSemanal<=50){
 
-            $colorText = 'text-danger';
-            $bar_style = 'progress-bar-danger';
+    $colorText = 'text-danger';
+    $bar_style = 'progress-bar-danger';
 
-         
-        }else if($rendSemanal>50 && $rendSemanal<=70){
+    $rendimientoSemanal = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
 
-            $colorText = 'text-danger';
-            $bar_style = 'progress-bar-warning';
+    }else if($rendSemanal>50 && $rendSemanal<=70){
 
-        }else{
-            $colorText = 'text-success';
-            $bar_style = 'progress-bar-success';
-           
-        }
+    $colorText = 'text-danger';
+    $bar_style = 'progress-bar-warning';
+
+    $rendimientoSemanal = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
+
+    }else{
+
+    $colorText = 'text-success';
+    $bar_style = 'progress-bar-success';
+
+    $rendimientoSemanal = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
+
     }
-        if($rendSemanal>100){
-        $rendSemanal=100;
-        }
-
+    }
+    if($rendSemanal>100){
+    $rendSemanal=100;
+    }
     $rendimiento_semanal = [
-        'text_style' => $colorText,
-        'bar_style' => $bar_style,
-        'rendimiento' => $rendSemanal
+    'text_style' => $colorText,
+    'bar_style' => $bar_style,
+    'rendimiento' => $rendSemanal,
+    'meta'=>$metaTotal,
+    'realizado'=>$realizadoTotal
     ];
- 
+
     $response['rendimiento_semanal'] = $rendimiento_semanal;
 
     /*Fin indicador Rendimiento Semanal */
@@ -176,6 +184,8 @@ GROUP BY a.id_meta,
                 FROM mte_metas a
                 WHERE a.codarea = ".$codarea."
                     AND POA=1
+                    AND ACTIVA=1
+                    AND MODALIDAD <> 'A'
                     AND a.id_periodo = ".$periodo_vigente;
 
     $stid = oci_parse($conn, $query);
@@ -185,14 +195,13 @@ GROUP BY a.id_meta,
 
     $query = "SELECT SUM(B.REALIZADO) AS REALIZADO
     FROM MTE_METAS_DETALLE B
-    WHERE B.ID_META IN (SELECT A.ID_META FROM MTE_METAS A WHERE a.codarea = ".$codarea." AND A.POA=1  AND a.id_periodo = ".$periodo_vigente." AND A.ACTIVA=1)";
-
+    WHERE B.ID_META IN (SELECT A.ID_META FROM MTE_METAS A WHERE a.codarea = ".$codarea." AND A.POA=1  AND a.id_periodo = ".$periodo_vigente." AND A.ACTIVA=1 AND A.MODALIDAD<>'A')";
 
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
     $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
     $realizadoPoa = $row['REALIZADO'];
-    $rendPoaSemanal = $realizadoPoa ?round(($realizadoPoa/$metaPoa)*100): 0;
+    $rendPoaSemanal = $realizadoPoa ? round(($realizadoPoa/$metaPoa)*100) : 0;
 
     if ($rendPoaSemanal<=50){
 
@@ -216,6 +225,7 @@ GROUP BY a.id_meta,
         $rendimientoPoa = '<div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
     
     }
+
     if($rendPoaSemanal>100){
         $rendPoaSemanal=100;
         }
@@ -223,16 +233,33 @@ GROUP BY a.id_meta,
     $rendimiento_poa = [
         'text_style' => $colorText,
         'bar_style' => $bar_style,
-        'rendimiento' => $rendPoaSemanal
+        'rendimiento' => $rendPoaSemanal,
+        'meta'=>$metaPoa,
+        'realizado'=>$realizadoPoa
     ];
 
-
-
     $response['rendimiento_poa'] = $rendimiento_poa;
-
    
     /*Fin indicador POA */
 
+    /*PORCENTAJE GLOBAL DE RENDIMIENTO */
+    $realizadoGlobal = $realizadoTotal + $realizadoPoa;
+    $metaGlobal = $metaTotal + $metaPoa;
+    $rendimiento = round((( $realizadoGlobal/$metaGlobal)*100));
+    if ($rendPoaSemanal<=50){
+        $colorText = 'text-danger';
+    }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
+        $colorText = 'text-warning';
+    }else{
+        $colorText = 'text-success';
+    }
+
+    $rendimiento_global = [
+        'rendimiento'=>$rendimiento,
+        'text_style'=>$colorText
+    ];
+    $response['rendimiento_global'] = $rendimiento_global;
+    /*FIN PORCENTAJE GLOBAL RENDIMIENTO */
     /*Indicadores detalle por sección */
 
     $query = "  SELECT SUM(META) AS META, SUM(REALIZADO) AS REALIZADO, T1.CODAREA, T2.DESCRIPCION 

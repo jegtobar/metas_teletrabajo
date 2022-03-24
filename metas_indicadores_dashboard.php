@@ -58,12 +58,12 @@
 
 <div class="content animate-panel">
 <div class="row">
-	<div class="col-lg-6 col-md-6">
+	<div class="col-lg-4 col-md4">
         <div id="rendSemanal">
             <div class="panel panel-default">
                 <div class="panel-heading"> 
                     <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
-                        Rendimiento Semanal 
+                        Actividades Regulares 
                     </h4>
                 </div>
 
@@ -73,14 +73,14 @@
                             <div class="progress">
                                 
                                 <div :class="'progress-bar ' + rendimiento_semanal.bar_style" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" :style="'min-width: 3em; width: ' + rendimiento_semanal.rendimiento + '%'">
-                                    {{ rendimiento_semanal.rendimiento }}%
+                                    {{ rendimiento_semanal.realizado }}
                                 </div>
 
                             </div>
                         </div>
                         <div class="col-md-3 text-center">
                             <h2 :class="rendimiento_semanal.text_style">
-                                {{ rendimiento_semanal.rendimiento }}%
+                                {{ rendimiento_semanal.meta }}
                             </h2>
                         </div>
                     </div>
@@ -88,12 +88,12 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-6 col-md-6">
+    <div class="col-lg-4 col-md-4">
         <div id="rendPoa">
             <div class="panel panel-default">
                 <div class="panel-heading"> 
                     <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
-                        POA 
+                        Actividades POA 
                     </h4>
                 </div>
                 <div class="panel-body">
@@ -102,15 +102,35 @@
                             <div class="progress">
 
                                 <div :class="'progress-bar ' + rendimiento_poa.bar_style" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" :style="'min-width: 3em; width: ' + rendimiento_poa.rendimiento + '%'">
-                                    {{ rendimiento_poa.rendimiento }}%
+                                    {{ rendimiento_poa.realizado }}
                                 </div>
 
                             </div>
                         </div>
                         <div class="col-md-3 text-center">
                             <h2 :class="rendimiento_poa.text_style">
-                                {{ rendimiento_poa.rendimiento }}%
+                                {{ rendimiento_poa.meta }}
                             </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-4">
+        <div id="rendPoa">
+            <div class="panel panel-default">
+                <div class="panel-heading"> 
+                    <h4 class="font-light m-b-xs" style="margin-top: 12px; ">
+                        Rendimiento Semanal
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="text-center">
+                            <h1 :class="rendimiento_global.text_style" style="font-size: 40px">
+                               <b> {{ rendimiento_global.rendimiento }}%</b>
+                            </h1>
                         </div>
                     </div>
                 </div>
@@ -291,6 +311,7 @@
         data: {
             message: 'Hello Vue!',
             lista_metas_general: [],
+            rendimiento_global :[],
             secciones: [],
             metas_poa: [],
             metas_regulares: [],
@@ -326,6 +347,7 @@
                     this.rendimiento_poa = data.rendimiento_poa
                     this.rendimiento_semanal = data.rendimiento_semanal
                     this.secciones = data.secciones
+                    this.rendimiento_global = data.rendimiento_global
                 })
 
             },

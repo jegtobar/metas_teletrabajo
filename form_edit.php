@@ -58,9 +58,10 @@ if (isset($_REQUEST['id_meta'])){
       
 
       $inDetalle = 'S';
+      /*areas */
       $query ="SELECT codarea,descripcion
       FROM RH_AREAS
-      WHERE CODAREA IN(SELECT CODAREA FROM RH_EMPLEADOS WHERE DEPENDE='".$nit."')";
+      WHERE DEPENDE IN(SELECT CODAREA FROM RH_EMPLEADOS WHERE DEPENDE='".$nit."')";
       $stid = oci_parse($conn, $query);
       oci_execute($stid, OCI_DEFAULT);
       $data=[];
