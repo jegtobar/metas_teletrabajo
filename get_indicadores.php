@@ -148,7 +148,7 @@
 
     }else if($rendSemanal>50 && $rendSemanal<=70){
 
-    $colorText = 'text-danger';
+    $colorText = 'text-warning';
     $bar_style = 'progress-bar-warning';
 
     $rendimientoSemanal = '<div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
@@ -180,9 +180,9 @@
 
     /*Indicador POA */
 
-    $query = "  SELECT SUM(a.meta)AS METATOTAL
-                FROM mte_metas a
-                WHERE a.codarea = ".$codarea."
+    $query = "SELECT SUM(a.meta)AS METATOTAL
+              FROM mte_metas a
+              WHERE a.codarea = ".$codarea."
                     AND POA=1
                     AND ACTIVA=1
                     AND MODALIDAD <> 'A'
@@ -247,20 +247,23 @@
     $realizadoGlobal = $realizadoTotal + $realizadoPoa;
     $metaGlobal = $metaTotal + $metaPoa;
     $rendimiento = round((( $realizadoGlobal/$metaGlobal)*100));
-    if ($rendPoaSemanal<=50){
+    if ($rendimiento<=50){
         $colorText = 'text-danger';
-    }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
+    }else if($rendimiento>50 && $rendimiento<=70){
         $colorText = 'text-warning';
     }else{
         $colorText = 'text-success';
     }
-
+    if($rendimiento>100){
+        $rendimiento = 100;
+    }
     $rendimiento_global = [
         'rendimiento'=>$rendimiento,
         'text_style'=>$colorText
     ];
     $response['rendimiento_global'] = $rendimiento_global;
     /*FIN PORCENTAJE GLOBAL RENDIMIENTO */
+    
     /*Indicadores detalle por sección */
 
     $query = "  SELECT SUM(META) AS META, SUM(REALIZADO) AS REALIZADO, T1.CODAREA, T2.DESCRIPCION 
@@ -271,7 +274,7 @@
                     SELECT 
                     ID_META 
                     FROM MTE_METAS 
-                    where activa=1 and codarea = ".$codarea." and id_periodo = ".$periodo_vigente."
+                    where activa=1 and modalidad <> 'A' and codarea = ".$codarea." and id_periodo = ".$periodo_vigente."
                 )
                 GROUP BY T1.CODAREA, T2.DESCRIPCION
             ";

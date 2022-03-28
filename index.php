@@ -149,15 +149,23 @@ $a = 0;
 foreach ($codarea2 as $area){
 
     
-    $query = "SELECT SUM(b.cantidad) AS realizado,
-                     SUM(a.meta) AS meta,
-                     ROUND((SUM(b.cantidad) / SUM(a.meta)) * 100) AS porcentaje,
-                     a.codarea
-                FROM mte_metas a
-                LEFT JOIN mte_cumplimientos b ON a.id_meta = b.id_meta
-               WHERE a.codarea = ".$area."
-                     AND a.id_periodo = ".$periodo."
-            GROUP BY a.codarea";
+  $query = "SELECT  realizado,
+  SUM(meta) AS meta,
+  ROUND((realizado / SUM(meta)) * 100) AS porcentaje,
+  codarea   
+  FROM  (                  
+      SELECT (select sum(realizado)
+                from mte_metas_detalle
+                where id_meta in (select id_meta from mte_metas where codarea = ".$area." and id_periodo = ".$periodo." and activa=1 and modalidad <> 'A')) AS realizado,
+              a.meta,
+              a.codarea
+        FROM  mte_metas a
+      WHERE  a.codarea = ".$area."
+              AND a.id_periodo = ".$periodo."
+              and activa = 1
+              and modalidad <> 'A'
+    )
+  GROUP BY  codarea,realizado";
     
     $stid = oci_parse($conn, $query);
     oci_execute($stid, OCI_DEFAULT);
@@ -444,7 +452,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre[$i];?></h3>
-              		<!-- <h1 class="widget-user-username" <?php if($porcentaje[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1> -->
+              		<h1 class="widget-user-username" <?php if($porcentaje[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	
@@ -487,7 +495,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre2[$i];?></h3>
-              		<!-- <h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1> -->
+              		<h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	

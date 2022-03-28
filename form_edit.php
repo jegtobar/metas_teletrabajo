@@ -59,10 +59,18 @@ if (isset($_REQUEST['id_meta'])){
 
       $inDetalle = 'S';
       /*areas */
-      $query ="SELECT codarea,descripcion
-      FROM RH_AREAS
-      WHERE DEPENDE IN(SELECT CODAREA FROM RH_EMPLEADOS WHERE DEPENDE='".$nit."')";
+      $query = "SELECT CODAREA FROM RH_EMPLEADOS WHERE NIT='".$nit."'";
       $stid = oci_parse($conn, $query);
+      oci_execute($stid, OCI_DEFAULT);
+      $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+      $codareaUsuario = $row['CODAREA'];
+
+      $query ="SELECT descripcion,
+                      codarea
+                      from rh_areas
+                      start with codarea = ".$codareaUsuario."
+                      connect by depende = prior codarea";
+            $stid = oci_parse($conn, $query);
       oci_execute($stid, OCI_DEFAULT);
       $data=[];
       while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {

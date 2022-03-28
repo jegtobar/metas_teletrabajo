@@ -43,6 +43,22 @@
 
           $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
           $row["MODALIDAD"] = $modalidad;
+          $calculo = round(($row["REALIZADO"]/$row["META"])*100);
+          if($calculo<=50){
+               $colorText='text-danger';
+          }elseif($calculo>50 and $calculo<=70){
+               $colorText='text-warning';
+          }else{
+           $colorText='text-success';
+          }
+ 
+          if($calculo>=100){
+                $calculo = 100;
+                $colorText = 'text-success';
+           }
+           $row["PROMEDIO"]=$calculo;
+           $row["COLORTEXT"] = $colorText;
+          
           $metas_poa [] = $row;
 
      }
@@ -73,6 +89,21 @@
 
           $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
           $row["MODALIDAD"] = $modalidad;
+          $calculo = round(($row["REALIZADO"]/$row["META"])*100);
+          if($calculo<=50){
+               $colorText='text-danger';
+          }elseif($calculo>50 and $calculo<=70){
+               $colorText='text-warning';
+          }else{
+           $colorText='text-success';
+          }
+ 
+          if($calculo>=100){
+                $calculo = 100;
+                $colorText = 'text-success';
+           }
+           $row["PROMEDIO"]=$calculo;
+           $row["COLORTEXT"] = $colorText;
           $metas_regulares [] = $row;
 
      }
@@ -104,6 +135,21 @@
 
           $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
           $row["MODALIDAD"] = $modalidad;
+          $calculo = round(($row["REALIZADO"]/$row["META"])*100);
+          if($calculo<=50){
+               $colorText='text-danger';
+          }elseif($calculo>50 and $calculo<=70){
+               $colorText='text-warning';
+          }else{
+           $colorText='text-success';
+          }
+ 
+          if($calculo>=100){
+                $calculo = 100;
+                $colorText = 'text-success';
+           }
+           $row["PROMEDIO"]=$calculo;
+           $row["COLORTEXT"] = $colorText;
           $metas_adicionales [] = $row;
 
      }

@@ -64,6 +64,16 @@ $query = "SELECT b.ID_META_DETALLE,
     
 }
 
+$query = "SELECT  META,CODAREA,ID_PERIODO
+       FROM  MTE_METAS
+       WHERE id_meta = ".$idMetaPadre;
+       $stid = oci_parse($conn, $query);
+       oci_execute($stid, OCI_DEFAULT);
+       $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
+       $metaActual = $row['META'];
+       $cod_area_parent = $row['CODAREA'];
+       $id_periodo = $row['ID_PERIODO'];
+
 
 
 
@@ -214,15 +224,18 @@ if (isset($_POST['seccionDetalleNew'])){
                                                META,
                                                FECHA,
                                                USUARIO,
-                                               REALIZADO)
+                                               REALIZADO,
+                                               COD_AREA_PARENT,
+                                               ID_PERIODO)
                                                VALUES(
                                                        $idMetaPadre,
                                                        $item,
                                                        $meta,
                                                        SYSDATE,
                                                        '".$usuario."',
-                                                       ".$realizado."
-                                               )";
+                                                       ".$realizado.",
+                                                       ".$cod_area_parent.",
+                                                       ".$id_periodo.")";
                                     
            $stid = oci_parse($conn, $query);
            $msj = oci_execute($stid, OCI_DEFAULT);

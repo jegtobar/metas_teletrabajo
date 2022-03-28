@@ -211,12 +211,15 @@
     $realizadoGlobal = $realizadoTotal + $realizadoPoa;
     $metaGlobal = $metaTotal + $metaPoa;
     $rendimiento = round((( $realizadoGlobal/$metaGlobal)*100));
-    if ($rendPoaSemanal<=50){
+    if ($rendimiento<=50){
         $colorText = 'text-danger';
-    }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
+    }else if($rendimiento>50 && $rendimiento<=70){
         $colorText = 'text-warning';
     }else{
         $colorText = 'text-success';
+    }
+    if($rendimiento>100){
+        $rendimiento = 100; 
     }
 
     $rendimiento_global = [

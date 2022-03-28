@@ -31,6 +31,9 @@
         .progress {
             margin-top: 27px;
         }
+        #divSeccion{
+            margin-top: 27px;
+        }
     </style>
 
 </head>
@@ -147,10 +150,10 @@
                     </div>
                     <div class="panel-body">
                         <div class="row" v-for="(seccion, key) in secciones" :key="key">
-                            <div style="cursor: pointer;" v-on:click="fetchDetail(seccion)" class="col-md-3">
+                            <div style="cursor: pointer;" v-on:click="fetchDetail(seccion)" class="col-md-3" id="divSeccion">
                                 {{ seccion.DESCRIPCION }}
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2" id="divSeccion">
                                 <span class="label label-default">{{ seccion.REALIZADO }}</span> / 
                                 <span class="label label-default">{{ seccion.META }}</span>
                             </div>
@@ -187,9 +190,10 @@
                     <thead>
                         <tr>
                             <th width="50%">Descripción</th>
-                            <th width="30%">Modalidad</th>
+                            <th width="25%">Modalidad</th>
                             <th width="10%">Realizado</th>
                             <th width="10%">Meta</th>
+                            <th width="5%">%</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,6 +209,9 @@
                             </td>
                             <td>
                                 {{ meta.META }}
+                            </td>
+                            <td>
+                            <p :class="meta.COLORTEXT"><b> {{ meta.PROMEDIO }}</b></p>
                             </td>
                         </tr>
                     </tbody>
@@ -227,9 +234,10 @@
                         <thead>
                             <tr>
                                 <th width="50%">Descripción</th>
-                                <th width="30%">Modalidad</th>
+                                <th width="25%">Modalidad</th>
                                 <th width="10%">Realizado</th>
                                 <th width="10%">Meta</th>
+                                <th width="5%">%</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -245,6 +253,9 @@
                                 </td>
                                 <td>
                                     {{ meta.META }}
+                                </td>
+                                <td>
+                                <p :class="meta.COLORTEXT"><b> {{ meta.PROMEDIO }}</b></p>
                                 </td>
                             </tr>
                         </tbody>
@@ -267,10 +278,11 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th width="50%">Actividad</th>
-                                <th width="30%">Modalidad</th>
+                                <th width="50%">Descripción</th>
+                                <th width="25%">Modalidad</th>
                                 <th width="10%">Realizado</th>
                                 <th width="10%">Meta</th>
+                                <th width="5%">%</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -286,6 +298,9 @@
                                 </td>
                                 <td>
                                     {{ meta.META }}
+                                </td>
+                                <td>
+                                <p :class="meta.COLORTEXT"><b> {{ meta.PROMEDIO }}</b></p>
                                 </td>
                             </tr>
                         </tbody>
