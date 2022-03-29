@@ -393,8 +393,8 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
 
               <div class="col-md-5" style="padding-left: 0px">
 
-                <h1 style="font-size: 36px;color: #2f8c18;margin-top:0px"><b><small>2022</small> QTZ 183M</b></h1>
-            		<h1 style="font-size: 36px;color: #181e8c;margin-top:0px"><b><small>2021</small> QTZ 163M</b></h1>
+                <h1 style="font-size: 36px;color: #2f8c18;margin-top:0px"><b><small>2022</small> QTZ 169M</b></h1>
+            		<h1 style="font-size: 36px;color: #181e8c;margin-top:0px"><b><small>2021</small> QTZ 152M</b></h1>
             		
             	</div>
 

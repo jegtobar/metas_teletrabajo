@@ -190,7 +190,8 @@
                      <thead>
                         <tr>
                             <th width="50%">Descripción</th>
-                            <th width="25%">Modalidad</th>
+                            <th width="15%">Modalidad</th>
+                            <th width="10%">Tipo</th>
                             <th width="10%">Realizado</th>
                             <th width="10%">Meta</th>
                             <th width="5%">%</th>
@@ -203,6 +204,9 @@
                             </td>
                             <td>
                                 {{ meta.MODALIDAD }}
+                            </td>
+                            <td>
+                                {{ meta.TIPO }}
                             </td>
                             <td>
                                 {{ meta.REALIZADO }}
@@ -234,7 +238,8 @@
                         <thead>
                             <tr>
                                 <th width="50%">Descripción</th>
-                                <th width="25%">Modalidad</th>
+                                <th width="15%">Modalidad</th>
+                                <th width="10%">Tipo</th>
                                 <th width="10%">Realizado</th>
                                 <th width="10%">Meta</th>
                                 <th width="5%">%</th>
@@ -247,6 +252,57 @@
                                 </td>
                                 <td>
                                     {{ meta.MODALIDAD }}
+                                </td>
+                                <td>
+                                    {{ meta.TIPO }}
+                                </td>
+                                <td>
+                                    {{ meta.REALIZADO }}
+                                </td>
+                                <td>
+                                    {{ meta.META }}
+                                </td>
+                                <td>
+                                   <p :class="meta.COLORTEXT"><b> {{ meta.PROMEDIO }}</b></p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Actividades Temporales</a></li>
+        </ul>
+
+        <br>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th width="50%">Descripción</th>
+                                <th width="15%">Modalidad</th>
+                                <th width="10%">Tipo</th>
+                                <th width="10%">Realizado</th>
+                                <th width="10%">Meta</th>
+                                <th width="5%">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(meta, key) in metas_temporales" :key="key">
+                                <td>
+                                    {{ meta.NOMBRE }}
+                                </td>
+                                <td>
+                                    {{ meta.MODALIDAD }}
+                                </td>
+                                <td>
+                                    {{ meta.TIPO }}
                                 </td>
                                 <td>
                                     {{ meta.REALIZADO }}
@@ -279,7 +335,8 @@
                         <thead>
                             <tr>
                                 <th width="50%">Actividad</th>
-                                <th width="25%">Modalidad</th>
+                                <th width="15%">Modalidad</th>
+                                <th width="10%">Tipo</th>
                                 <th width="10%">Realizado</th>
                                 <th width="10%">Meta</th>
                                 <th width="5%">%</th>
@@ -292,6 +349,9 @@
                                 </td>
                                 <td>
                                     {{ meta.MODALIDAD }}
+                                </td>
+                                <td>
+                                    {{ meta.TIPO }}
                                 </td>
                                 <td>
                                     {{ meta.REALIZADO }}
@@ -390,6 +450,7 @@
                     this.metas_poa = data.metas_poa
                     this.metas_regulares = data.metas_regulares
                     this.metas_adicionales = data.metas_adicionales
+                    this.metas_temporales = data.metas_temporales
                 
                 })
             },

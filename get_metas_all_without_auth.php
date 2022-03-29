@@ -12,7 +12,7 @@
           Se realiza la busqueda para actividades que son POA
      */
 
-     $query = " SELECT SUM(T1.META)AS META,SUM(T1.REALIZADO)AS REALIZADO, T2.NOMBRE,T2.TIPO AS MODALIDAD
+     $query = " SELECT SUM(T1.META)AS META,SUM(T1.REALIZADO)AS REALIZADO, T2.NOMBRE,T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
      FROM MTE_METAS_DETALLE T1
      INNER JOIN MTE_METAS T2
      ON T1.ID_META = T2.ID_META
@@ -20,7 +20,7 @@
      AND T2.ACTIVA = 1
      and t2.id_periodo = $data->id_periodo
      AND T2.CODAREA = $data->codarea
-     GROUP BY T2.NOMBRE, T2.TIPO"; 
+     GROUP BY T2.NOMBRE, T2.TIPO, T2.MODALIDAD"; 
 
      $stid = oci_parse($conn, $query);
 
@@ -32,7 +32,19 @@
 
           $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
           $row["MODALIDAD"] = $modalidad;
-          $calculo = round(($row["REALIZADO"]/$row["META"])*100);
+          if($row["TIPO"] == 'R'){
+               $tip = 'Regular';
+          }elseif($row["TIPO"] == 'T'){
+               $tip = 'Temporal';
+          }else{
+               $tip = 'Adicional';
+          }
+          $row["TIPO"] = $tip;
+          if ($row["REALIZADO"]==0){
+               $calculo = 0;
+          }else{
+               $calculo = round(($row["REALIZADO"]/$row["META"])*100);
+          }
           if($calculo<=50){
                $colorText='text-danger';
           }elseif($calculo>50 and $calculo<=70){
@@ -57,7 +69,7 @@
           Se realiza la busqueda para actividades que son regulares y NO SON POA
      */
 
-     $query = "SELECT SUM(T1.META)AS META,SUM(T1.REALIZADO)AS REALIZADO, T2.NOMBRE, T2.TIPO AS MODALIDAD
+     $query = "SELECT SUM(T1.META)AS META,SUM(T1.REALIZADO)AS REALIZADO, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
                FROM MTE_METAS_DETALLE T1
                INNER JOIN MTE_METAS T2
                ON T1.ID_META = T2.ID_META
@@ -66,7 +78,7 @@
                AND T2.ACTIVA = 1
                and t2.id_periodo = $data->id_periodo
                AND T2.CODAREA = $data->codarea
-               GROUP BY T2.NOMBRE, T2.TIPO";
+               GROUP BY T2.NOMBRE, T2.TIPO, T2.MODALIDAD";
 
      $stid = oci_parse($conn, $query);
 
@@ -78,6 +90,16 @@
 
           $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
           $row["MODALIDAD"] = $modalidad;
+
+          if($row["TIPO"] == 'R'){
+               $tip = 'Regular';
+          }elseif($row["TIPO"] == 'T'){
+               $tip = 'Temporal';
+          }else{
+               $tip = 'Adicional';
+          }
+          $row["TIPO"] = $tip;
+
           $calculo = round(($row["REALIZADO"]/$row["META"])*100);
           if($calculo<=50){
                $colorText='text-danger';
@@ -103,7 +125,7 @@
           Se realiza la busqueda para actividades que son adicionales y NO SON POA
      */
 
-     $query = "SELECT SUM(T1.META)AS META,SUM(T1.REALIZADO)AS REALIZADO, T2.NOMBRE, T2.TIPO AS MODALIDAD
+     $query = "SELECT SUM(T1.META)AS META,SUM(T1.REALIZADO)AS REALIZADO, T2.NOMBRE, T2.TIPO AS MODALIDAD, T2.MODALIDAD AS TIPO
                FROM MTE_METAS_DETALLE T1
                INNER JOIN MTE_METAS T2
                ON T1.ID_META = T2.ID_META
@@ -112,7 +134,7 @@
                AND T2.ACTIVA = 1
                and t2.id_periodo = $data->id_periodo
                AND T2.CODAREA = $data->codarea
-               GROUP BY T2.NOMBRE, T2.TIPO";
+               GROUP BY T2.NOMBRE, T2.TIPO, T2.MODALIDAD";
 
 
      $stid = oci_parse($conn, $query);
@@ -125,6 +147,14 @@
 
           $modalidad = $row["MODALIDAD"] == 'M' ? 'Mixta' : $row['MODALIDAD'] == 'P' ? 'Presencial' : 'Teletrabajo';
           $row["MODALIDAD"] = $modalidad;
+          if($row["TIPO"] == 'R'){
+               $tip = 'Regular';
+          }elseif($row["TIPO"] == 'T'){
+               $tip = 'Temporal';
+          }else{
+               $tip = 'Adicional';
+          }
+          $row["TIPO"] = $tip;
           $calculo = round(($row["REALIZADO"]/$row["META"])*100);
           if($calculo<=50){
                $colorText='text-danger';

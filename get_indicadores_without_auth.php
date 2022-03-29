@@ -242,8 +242,7 @@
                     FROM MTE_METAS 
                     where activa=1 and modalidad <> 'A' and codarea = ".$codarea." and id_periodo = ".$periodo_vigente."
                 )
-                GROUP BY T1.CODAREA, T2.DESCRIPCION
-            ";
+                GROUP BY T1.CODAREA, T2.DESCRIPCION";
 
     $stid = oci_parse($conn, $query);
 
