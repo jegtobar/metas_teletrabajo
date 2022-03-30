@@ -30,7 +30,10 @@
             margin-top: 27px;
         }
         #divSeccion{
-            margin-top: 27px;
+            margin-top: 26px;
+        }
+        #divParent{
+            margin-top: 18px;
         }
     </style>
 
@@ -143,15 +146,15 @@
 
         <div class="col-md-12">
             <div class="panel panel-default">
-                    <div class="panel-heading" > 
+                    <div class="panel-heading"> 
                         <h4 class="font-light m-b-xs" style="margin-top: 12px; cursor: pointer;" v-on:click="fetchDetailAll()">
                             Secciones
                         </h4>
                     </div>
                     <div class="panel-body">
                         <div class="row" v-for="(seccion, key) in secciones" :key="key">
-                            <div style="cursor: pointer;" v-on:click="fetchDetail(seccion)" class="col-md-3" id="divSeccion">
-                                {{ seccion.DESCRIPCION }}
+                            <div style="cursor: pointer;" v-on:click="fetchDetail(seccion)" class="col-md-3" id="divParent">
+                            <h4><span :class="seccion.selected ? ' label label-success' : '' " >{{seccion.DESCRIPCION}}</span></h4>
                             </div>
                             <div class="col-md-2" id="divSeccion">
                                 <span class="label label-default">{{ seccion.REALIZADO }}</span> / 
@@ -172,9 +175,9 @@
                         </div>
                         
     
-</div>
-</div>
-</div>
+                    </div>
+            </div>
+    </div>
 </div>
 
         <!-- Detalle -->
@@ -427,10 +430,13 @@
 
             },
             fetchDetail(seccion){
-
+                this.secciones.forEach(element => {
+                    element.selected = false
+                });
+                seccion.selected = true
                 const queryString = window.location.search;
 
-                const urlParams = new URLSearchParams(queryString);
+                const urlParams = new URLSearchParams(queryString)
 
                 const id_periodo = urlParams.get('id_periodo')
 
@@ -451,7 +457,7 @@
                     this.metas_regulares = data.metas_regulares
                     this.metas_adicionales = data.metas_adicionales
                     this.metas_temporales = data.metas_temporales
-                
+                                    
                 })
             },
 
@@ -482,15 +488,19 @@
                 this.metas_adicionales = data.metas_adicionales
                
             })
-            }
+            },
+
+    
+
+            
         },
         mounted(){
             this.fetchData()
             this.fetchDetailAll()
-        }
+        },
+
     })
 
 </script>
-
 </body>
 </html>

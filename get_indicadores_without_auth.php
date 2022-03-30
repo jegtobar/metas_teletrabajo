@@ -277,8 +277,7 @@
             }
         $seccion['bar_style'] = $bar_style;
         $seccion['text_style'] = $text_style;
-
-
+        $seccion['selected'] = false;
     }
 
     $response["secciones"] = $secciones;
