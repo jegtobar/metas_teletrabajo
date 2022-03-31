@@ -49,9 +49,9 @@ if (isset($_REQUEST['id_meta'])){
         $pendienteAsignar=$metaT;
     }
     
-    if($metaT >= $meta ){
-      $grabo = 'M';
-    }
+    // if($metaT >= $meta ){
+    //   $grabo = 'M';
+    // }
     
     }
     $pendiente = $meta - $pendienteAsignar;
@@ -179,12 +179,12 @@ if (isset($_REQUEST['id_meta'])){
             </div> -->
 
              <div class="input-group mb-3">
-              <div class="input-group-prepend">
+              <!-- <div class="input-group-prepend">
                 <div class="input-group-text">
                   <label for="mte_meta" style="font-size: 18px">Pendiente de asignación</label>
                   <input type="text" id="asignacion" class="asignacion" value="<?php if (isset($id_meta)){echo $pendiente;}?>" id="asignacion" name="asignacion" disabled>
                 </div>
-              </div>
+              </div> -->
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -399,11 +399,11 @@ $('#agregar').on('click',function(){
         });
         $('#asignacion').val(valor - valor_restar);
         const value = document.getElementById('asignacion').value
-        if (value==0){
-          $("#agregar").hide();
-        }else{
-          $("#agregar").show();
-        }
+        // if (value==0){
+        //   $("#agregar").hide();
+        // }else{
+        //   $("#agregar").show();
+        // }
       
     });
      

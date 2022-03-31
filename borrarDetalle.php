@@ -4,24 +4,24 @@
 
 	$id_meta = $_REQUEST['id_meta'];
 
-	$query = "SELECT REALIZADO FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta;
+	$query = "SELECT META FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta;
 	$stid = oci_parse($conn, $query);
 	oci_execute($stid, OCI_DEFAULT);
 	$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
-	$realizado = $row['REALIZADO'];
+	$metaDetalle = $row['META'];
 
 
-	$query = "SELECT ID_META, CANTIDAD 
+	$query = "SELECT ID_META, META
 			FROM MTE_METAS
 			WHERE ID_META = (SELECT ID_META FROM MTE_METAS_DETALLE WHERE ID_META_DETALLE =".$id_meta.")";
 			$stid = oci_parse($conn, $query);
 			oci_execute($stid, OCI_DEFAULT);
 			$row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
 			$idMeta = $row['ID_META'];
-			$cantidad = $row['CANTIDAD'];
+			$meta = $row['META'];
 	
 
-	$nuevaCantidad = (int)$cantidad - (int)$realizado;
+	$nuevaCantidad = (int)$meta - (int)$metaDetalle;
 
 
 
@@ -46,7 +46,7 @@
 	        
 	        oci_commit($conn);
 			$query = "UPDATE MTE_METAS 
-			SET	CANTIDAD = ".$nuevaCantidad."
+			SET	META = ".$nuevaCantidad."
 			WHERE id_meta = ".$idMeta;
 			$stid = oci_parse($conn, $query);          
 			$mensaje = oci_execute($stid, OCI_DEFAULT);

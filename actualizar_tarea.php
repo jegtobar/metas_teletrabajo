@@ -79,8 +79,6 @@ $query = "SELECT  META,CODAREA,ID_PERIODO
 
 
 if (isset($_POST['guardarMeta'])){
-   
-  
     $query = "UPDATE MTE_METAS 
                  SET NOMBRE = '".$nombre."',
                      TIPO = '".$tipo."',
@@ -95,7 +93,6 @@ if (isset($_POST['guardarMeta'])){
    $stid = oci_parse($conn, $query);          
    $mensaje = oci_execute($stid, OCI_DEFAULT);
   
- 
    if($mensaje){
        
        oci_commit($conn);
@@ -124,9 +121,17 @@ if (isset($_POST['guardarMeta'])){
            $metaT = $metaT + $m ;
            $l++;
        }
-       if($metaT > $metaActual){
-           $grabo = 'M';
-       }else{
+
+       $query = "UPDATE MTE_METAS 
+                SET META = ".$metaT."
+                WHERE id_meta = ".$idMetaPadre;
+
+
+    $stid = oci_parse($conn, $query);          
+    $mensaje = oci_execute($stid, OCI_DEFAULT);
+
+
+    if($mensaje){
 
        foreach ($idMetaDetalle['id'] as $item) {
            $meta = $detalle['meta']{$i};
@@ -154,7 +159,7 @@ if (isset($_POST['guardarMeta'])){
                        
                    }
            }
-       }
+        }
    }
 
        
@@ -184,7 +189,7 @@ if (isset($_POST['seccionDetalleNew'])){
    foreach ($detalleMeta['meta'] as $item) {
        $meta = $meta + $item;
    }
-
+     $metaGlobal = $metaT + $meta;
    $query = "SELECT  META 
                FROM  MTE_METAS
                WHERE id_meta = ".$idMetaPadre;
@@ -192,13 +197,11 @@ if (isset($_POST['seccionDetalleNew'])){
    oci_execute($stid, OCI_DEFAULT);
    $row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS);
    $metaActual = $row['META'];
-   if($meta > $metaActual){
-       $grabo = 'M';
-   }else{
    $cantidad=0;
     $query = "UPDATE MTE_METAS 
                  SET NOMBRE = '".$nombre."',
                      CANTIDAD = ".$cantidad.",
+                     META = ".$metaGlobal.",
                      TIPO = '".$tipo."',
                      MODALIDAD = '".$modalidad."',
                      USUARIO = '".$usuario."',
@@ -254,12 +257,11 @@ if (isset($_POST['seccionDetalleNew'])){
                    
                }
    }
-}
-}
+ }
+
 }
 
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -385,3 +387,5 @@ $( document ).ready(function() {
 <?php }?>
 </body>
 </html>
+
+
