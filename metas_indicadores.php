@@ -151,7 +151,7 @@
                     <div class="panel-body">
                         <div class="row" v-for="(seccion, key) in secciones" :key="key">
                             <div style="cursor: pointer;" v-on:click="fetchDetail(seccion)" class="col-md-3" id="divSeccion">
-                                {{ seccion.DESCRIPCION }}
+                                <h4><span :class="seccion.selected ? ' label label-success' : '' " >{{seccion.DESCRIPCION}}</span></h4>
                             </div>
                             <div class="col-md-2" id="divSeccion">
                                 <span class="label label-default">{{ seccion.REALIZADO }}</span> / 
@@ -369,7 +369,11 @@
 
             },
             fetchDetail(seccion){
-
+                this.secciones.forEach(element => {
+                    element.selected = false
+                });
+                seccion.selected = true
+                
                 fetch('get_detalle_indicadores.php', {
                     method: 'POST',
                     mode: 'no-cors',

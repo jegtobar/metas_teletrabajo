@@ -255,7 +255,7 @@
         $secciones [] = $row;
 
     }
-
+    //Promedio de porcentajes por sección.
     foreach ($secciones as &$seccion) {
         $query = "SELECT T1.*
         FROM MTE_METAS_DETALLE T1

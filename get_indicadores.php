@@ -266,18 +266,17 @@
     
     /*Indicadores detalle por sección */
 
-    $query = "  SELECT SUM(META) AS META, SUM(REALIZADO) AS REALIZADO, T1.CODAREA, T2.DESCRIPCION 
-                FROM MTE_METAS_DETALLE T1
-                LEFT JOIN RH_AREAS T2
-                ON T1.CODAREA = T2.CODAREA
-                WHERE ID_META IN (
-                    SELECT 
-                    ID_META 
-                    FROM MTE_METAS 
-                    where activa=1 and modalidad <> 'A' and codarea = ".$codarea." and id_periodo = ".$periodo_vigente."
-                )
-                GROUP BY T1.CODAREA, T2.DESCRIPCION
-            ";
+    $query = "  SELECT SUM(META)AS META, SUM(REALIZADO)AS REALIZADO, T1.CODAREA, T2.DESCRIPCION, T1.ID_PERIODO
+    FROM MTE_METAS_DETALLE T1
+    LEFT JOIN RH_AREAS T2
+    ON T1.CODAREA = T2.CODAREA
+    WHERE ID_META IN (
+        SELECT 
+        ID_META 
+        FROM MTE_METAS 
+        where activa=1 and modalidad <> 'A' and codarea = ".$codarea." and id_periodo = ".$periodo_vigente."
+    )
+    GROUP BY T1.CODAREA, T2.DESCRIPCION, ID_PERIODO";
 
     $stid = oci_parse($conn, $query);
 
@@ -291,11 +290,36 @@
 
     }
 
-    foreach ($secciones as &$seccion) {
+     //Promedio de porcentajes por sección.
+     foreach ($secciones as &$seccion) {
+        $query = "SELECT T1.*
+        FROM MTE_METAS_DETALLE T1
+        INNER JOIN MTE_METAS T2
+        ON T1.ID_META = T2.ID_META
+        WHERE T2.MODALIDAD <> 'A'
+        AND T2.ACTIVA = 1
+        and t2.id_periodo = ".$seccion["ID_PERIODO"]."
+        AND T1.CODAREA =".$seccion["CODAREA"];
+        $stid = oci_parse($conn, $query);
+        oci_execute($stid, OCI_DEFAULT);
+        $metas_adicionales = [];
+        $i = 0;
+        $sumaPromedios = 0;
 
-        $cumplimientoDetalle = round(($seccion["REALIZADO"]/$seccion["META"])*100);
+        while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+            if (!empty($row["REALIZADO"])){
+                $calculo = ($row["REALIZADO"]/$row["META"])*100;
+                if ($calculo >100){
+                    $calculo =100;
+                }
+                $sumaPromedios = $sumaPromedios + $calculo;
+            }
+            $i++;
+        }
 
-        $seccion['cumplimientop']= $cumplimientoDetalle;
+        $cumplimientoPorcentaje = round($sumaPromedios/$i);
+        $i = 0;
+        $seccion['cumplimientop'] = $cumplimientoPorcentaje;
 
         $bar_style = 'progress-bar-success';
         $text_style = 'text-success';
@@ -312,9 +336,9 @@
             }
         $seccion['bar_style'] = $bar_style;
         $seccion['text_style'] = $text_style;
-
-
+        $seccion['selected'] = false;
     }
+
 
     $response["secciones"] = $secciones;
 
