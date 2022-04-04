@@ -45,6 +45,7 @@
           }else{
                $calculo = round(($row["REALIZADO"]/$row["META"])*100);
           }
+          
           if($calculo<=50){
                $colorText='text-danger';
           }elseif($calculo>50 and $calculo<=70){

@@ -203,6 +203,59 @@
         'realizado'=>number_format($realizadoPoa)
     ];
 
+    $colorText="";
+    $bar_style="";
+    $programado=0;
+    $ejecutado=0;
+    $porcentajePoa=0;
+    
+    if ($codarea == 33){
+        $programado = 15415;
+        $ejecutado = 17661;
+        $porcentajePoa = round(($ejecutado/$programado)*100);
+        if ($porcentajePoa >100){
+            $porcentajePoa = 100;
+        }
+    }else if ($codarea == 34){
+        $programado = 169347;
+        $ejecutado = 164019;
+        $porcentajePoa = round(($ejecutado/$programado)*100);
+        if ($porcentajePoa >100){
+            $porcentajePoa = 100;
+        }
+    }else if ($codarea == 48){
+        $programado = 3226;
+        $ejecutado = 3319;
+        $porcentajePoa = round(($ejecutado/$programado)*100);
+        if ($porcentajePoa >100){
+            $porcentajePoa = 100;
+        }
+    }else if ($codarea == 35){
+        $programado = 10552;
+        $ejecutado = 3883;
+        $porcentajePoa = round(($ejecutado/$programado)*100);
+        if ($porcentajePoa >100){
+            $porcentajePoa = 100;
+        }
+    }
+
+    if($porcentajePoa<50){
+        $colorText = 'text-danger';
+        $bar_style = 'progress-bar-danger';
+    }else if($porcentajePoa>50 && $porcentajePoa <=70){
+        $colorText = 'text-warning';
+        $bar_style = 'progress-bar-warning';
+    } else{
+        $colorText = 'text-success';
+        $bar_style = 'progress-bar-success';
+    }
+    $rendPoaProgramado['text_style']=$colorText;
+    $rendPoaProgramado['bar_style']=$bar_style;
+    $rendPoaProgramado['programado']=number_format($programado);
+    $rendPoaProgramado['ejecutado']=number_format($ejecutado);
+    $rendPoaProgramado['porcentaje']=$porcentajePoa;
+
+    $response['rendimiento_poa_programado'] = $rendPoaProgramado;
     $response['rendimiento_poa'] = $rendimiento_poa;
 
     /*Fin indicador POA */
@@ -256,6 +309,8 @@
 
     }
     //Promedio de porcentajes por sección.
+    $k = 0;
+    $rendimiento = 0;
     foreach ($secciones as &$seccion) {
         $query = "SELECT T1.*
         FROM MTE_METAS_DETALLE T1
@@ -282,9 +337,12 @@
             $i++;
         }
 
+
+        //Nuevo calculo de rendimiento semanal global
         $cumplimientoPorcentaje = round($sumaPromedios/$i);
-        $i = 0;
         $seccion['cumplimientop'] = $cumplimientoPorcentaje;
+        $rendimiento = $rendimiento + $cumplimientoPorcentaje;
+        $k++; 
 
         $bar_style = 'progress-bar-success';
         $text_style = 'text-success';
@@ -304,7 +362,22 @@
         $seccion['selected'] = false;
     }
 
+    $rendimientoPromedio = round($rendimiento/$k);
+        $text_style = 'text-success';
+    if ($rendimientoPromedio <= 50) {
+        $text_style = 'text-danger';
+    }elseif ($rendimientoPromedio> 50 && $rendimientoPromedio <= 70) {
+        $text_style = 'text-warning';
+    }
+    if( $rendimientoPromedio>100){
+        $rendimientoPromedio =100;
+        }
+
     $response["secciones"] = $secciones;
+    $promedio['rendimiento'] = $rendimientoPromedio;
+    $promedio['text_style'] = $text_style;
+
+    $response["rendimientoSemanalPromedio"] = $promedio;
 
     echo json_encode($response);
     

@@ -1,125 +1,95 @@
 <?php
-    session_start();
-	//bloqueado en servidor 172.23.25.31 en los demas hay que habilitarlo
-	/*ini_set("session.cookie_lifetime",8*60*60);
-    ini_set("session.gc_maxlifetime",8*60*60);*/
-    $_SESSION['matenimiento'] = false;
-    
-    if ($_SESSION['matenimiento']) {
-        header('location: ingreso.php');
-        exit();
-    }
+		
+	session_start();
+	header('Content-Type: text/html; charset=utf-8');	
+	include('db.php');
+	
+	$usuario = "RRHH";
+	$password = "RRHHADMIN";
 
-    /* DB CONNECTION */
-    $host     = '127.0.0.1';
-	$db_user  = 'root';
-	//$db_pass  = 'area51';
-	$db_pass  = 'udiwf'; //172.23.25.31
-	$database = 'udi';
+    $conn = abrirConexion($usuario,$password);
 	
-	$link = mysqli_connect( $host, $db_user, $db_pass, $database ) or die( 'Error connecting to MySQL server (' . mysqli_connect_errno() .') '. mysqli_connect_error() );
-	mysqli_set_charset($link, 'utf8');
+	@$usuario  = isset($_POST['usuario'])  ? $_POST['usuario']  : $_SESSION['usuario'];
+	@$password = isset($_POST['password']) ? $_POST['password'] : $_SESSION['password'];
 
-    $key = 'app_S0l1c1tudes.15';
-    /* /DB CONNECTION */
-    
-	$user = (isset($_POST['user']) && !empty($_POST['user'])) ? strtolower(trim($_POST['user'])) : strtolower($_SESSION['user']);
-	$pass = (isset($_POST['pass']) && !empty($_POST['pass'])) ? $_POST['pass']                   : $_SESSION['pass'];
-	
-	/*Daniel A. Melchor 12/06/2020
-	  al cargar documentos pdf despues de las 18:00 horas mostraba la fecha del siguiente dia
-	  para evitar esto se agrega linea de zona horaria date_default_timezone_set('America/Guatemala');
-	*/
-	date_default_timezone_set('America/Guatemala');
-	
-	if(!isset($user) || !isset($pass)) {
-	    header('location: ingreso.php');
-	    exit();
+	# redirect to login page if not logged in
+	if(!isset($usuario) || !isset($password)) {
+		echo "<script language=\"javascript\">window.location=\"index.php\"</script>";
+		exit();
 	}// /if !isset($username) || !isset($password)
 
-	$_SESSION['user'] = trim($user);
-	$_SESSION['pass'] = $pass;
+	$_SESSION['usuario']  = $usuario;
+	$_SESSION['password'] = $password;
 
-	$query = "SELECT u.usuario,
-					 u.password,
-					 u.nombre,
-					 u.activo,
-					 u.cod_dependencia,
-					 u.nivel,
-					 d.descripcion AS nom_dependencia,
-	                 u.laip_revisor,
-	                 u.laip_editor
-				FROM udi_usuarios u,
-					 udi_dependencias d
-			   WHERE LOWER(RTRIM(u.usuario)) = '". mysqli_real_escape_string($link, trim($user)) ."'
-				 AND u.password              = MD5('". mysqli_real_escape_string($link, $pass) ."')
-				 AND u.cod_dependencia       = d.cod_dependencia";
-
-	$result = mysqli_query($link, $query);
-
-	if(!$result) {
+	$query = "select e.usuario,
+					 e.pass,
+					 e.idemp,
+					 e.nit,
+					 e.nombre,
+					 e.apellido,
+					 e.codarea,
+                     (select descripcion from rh_areas where codarea = e.codarea) as seccion,
+					 e.ruta_sap,
+					 e.emailmuni
+				from RH_EMPLEADOS e
+			   where upper(rtrim(e.usuario)) = '". strtoupper(trim($usuario,'UTF-8')) ."' 
+				 and rtrim(desencriptar(e.pass)) = '". trim($password) ."' and e.status = 'A'"; 
+	
+	$idConsulta = oci_parse($conn, $query);
+	oci_execute($idConsulta, OCI_DEFAULT);	
+	
+	if(!$idConsulta) {
 		echo('Ha Ocurrido un Error mientras se verificaban sus datos '.
 			 'Por favor Notifiquenos .\\n Si este error Persiste, Gracias');
 	}else{
-	   $row = mysqli_fetch_array($result);
-
-	   $_SESSION['nombre_usuario'] = $row['nombre'];
-	   $nombre_user = $_SESSION['nombre_usuario'];
-
-	   $_SESSION['usuario_activo'] = $row['activo'];
-	   $activo = $_SESSION['usuario_activo'];
-
-	   $_SESSION['iddependencia'] = $row['cod_dependencia'];
-	   $id_dependencia = $_SESSION['iddependencia'];
+	   $row = oci_fetch_array($idConsulta);
 	   
-	   $_SESSION['niv'] = $row['nivel'];
-	   $nivel = $_SESSION['niv'];
-	   
-	   $_SESSION['nomdependencia'] = $row['nom_dependencia'];
-	   $nom_dependencia = $_SESSION['nomdependencia'];
-	   
-	   $_SESSION['laip_editor'] = $row['laip_editor'];
-	   $laip_editor = $_SESSION['laip_editor'];
-	   
-	   $_SESSION['laip_revisor'] = $row['laip_revisor'];
-	   $laip_revisor = $_SESSION['laip_revisor'];
-	   
-	}// /if(!$result)
-
-	if (mysqli_num_rows($result) == 0 || 'X' == $activo) {
-		unset($_SESSION['user']);
-		unset($_SESSION['pass']);
-		unset($_SESSION['nombre_usuario']);
-		unset($_SESSION['usuario_activo']);
-		unset($_SESSION['iddependencia']);
-		unset($_SESSION['niv']);
-		unset($_SESSION['nomdependencia']);
-		unset($_SESSION['laip_editor']);
-		unset($_SESSION['laip_revisor']);
-
-		$_SESSION['error_login'] = 'Usuario o contraseña incorrectos.';
-		header('location: ingreso.php');
-		exit();
-
+	   $_SESSION['nombreusuario'] = $row['NOMBRE']." ".$row['APELLIDO'];
+	   $nombreusuario = $_SESSION['nombreusuario'];
+        $_SESSION['area']  = $row['SECCION'];
 		
-	}// /if oci_num_rows($idConsulta) == 0
+	   $usuario = strtoupper(trim($usuario,'UTF-8'));
+	   if (16 == $row['CODAREA'] || 29 == $row['CODAREA'] || 36 == $row['CODAREA'] || 39 == $row['CODAREA'] || 40 == $row['CODAREA'] || 41 == $row['CODAREA'] || 42 == $row['CODAREA'] || 43 == $row['CODAREA']) {
+	       $_SESSION['codarea'] = 16;
+	       $codarea = $_SESSION['codarea'];
+	   } else {
+	       $_SESSION['codarea'] = $row['CODAREA'];
+	       $codarea = $_SESSION['codarea'];
+	   }
+	   
+	    $_SESSION['idemp'] = $row['IDEMP'];
+	   $idemp = $_SESSION['idemp'];
+	   
+	   $_SESSION['nit'] = $row['NIT'];
+	   $nit = $_SESSION['nit'];
+	   
+   	   $_SESSION['ruta_sap'] = $row['RUTA_SAP'];
+	   $ruta_sap = $_SESSION['ruta_sap'];
+	   
+       $_SESSION['email'] = $row['EMAILMUNI'];
+	   $email = $_SESSION['email'];	   
+	   	   
+	}// /if !$idConsulta
 	
-	if ('N' == $activo) {
+	if (oci_num_rows($idConsulta) == 0) {
+		unset($_SESSION['usuario']);
+		unset($_SESSION['password']);		 
+		unset($_SESSION['nombreusuario']);
+		unset($_SESSION['codarea']);
+		unset($_SESSION['idemp']);
+		unset($_SESSION['nit']);
+		unset($_SESSION['email']);		
 
-		unset($_SESSION['user']);
-		unset($_SESSION['pass']);
-		unset($_SESSION['nombre_usuario']);
-		unset($_SESSION['usuario_activo']);
-		unset($_SESSION['iddependencia']);
-		unset($_SESSION['iddependencia']);
-		unset($_SESSION['niv']);
-		unset($_SESSION['nomdependencia']);
-		unset($_SESSION['laip_editor']);
-		unset($_SESSION['laip_revisor']);
+		$_SESSION = array();
+		session_destroy();
 
-		$_SESSION['error_login'] = 'Usuario inactivo. Favor comuniquese con el administrador.';
-		header('location: ingreso.php');
+		echo "<form name=\"mensajeform\" method=\"post\" action=\"index.php\">
+				<input type=\"hidden\" name=\"mensaje\" value=\"Usuario o contrase&ntilde;a incorrectos\" />
+			  </form>
+			  
+			  <script type=\"text/javascript\">
+				document.mensajeform.submit();
+			  </script>";
+
 		exit();
-		
 	}// /if oci_num_rows($idConsulta) == 0
-?>	

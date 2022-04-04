@@ -30,7 +30,6 @@
                ON T1.ID_META = T2.ID_META
                WHERE T2.POA = 1
                AND T2.ACTIVA = 1
-               and modalidad <> 'A'
                and t2.id_periodo = $periodo_vigente
                AND T1.CODAREA = $data->codarea"; 
 
@@ -156,11 +155,6 @@
      }
 
      $response["metas_adicionales"] = $metas_adicionales;
-
-     /*Fin actividades adicionales */
-
-
-   
 
      echo json_encode($response);
 

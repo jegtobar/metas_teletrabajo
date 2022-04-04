@@ -1,6 +1,6 @@
 <?php 
 
-include '../auth.php';
+include 'auth.php';
 
 if (isset($_REQUEST['fecha_ini'])){
 	$ini = $_REQUEST['fecha_ini'];
@@ -118,8 +118,7 @@ $a = 0;
               <table id="sortable" class="table table-striped">
               <thead>
                 <tr>
-                  <th class="col-md-4">Nombre</th>
-                  <th class="col-md-2">Modalidad</th>
+                  <th class="col-md-6">Nombre</th>
                   <th class="col-md-2">Cantidad</th>
                   <th class="col-md-2">Meta</th>
                   <th class="col-md-2">Eliminar</th>

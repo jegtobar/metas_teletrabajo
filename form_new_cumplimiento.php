@@ -173,7 +173,7 @@ if (isset($_REQUEST['id_meta'])){
                   <th>Meta</th>
                   <th>Realizado</th>
                   <th>Usuario</th> 
-                  <th>Actualizar cumplimiento</th>                
+                  <th>Cumplimiento</th>                
                 </tr>
                 </thead>
                 <tbody>
@@ -186,7 +186,7 @@ if (isset($_REQUEST['id_meta'])){
                     <td><input type="text" class="text" disabled size="5"  value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]"></td>
                     <td><input type="text" class="text" disabled size="5" value="'.$realizado[$i].'" id="cumplimiento" name="cumplimiento[]"></td>
                     <td><input type="text" class="text" disabled size="10" value="'.$user[$i].'" id="usuario"></td>
-                    <td><input type="number" class="text" size="5" id="ingresarCumplimiento" value="'.$realizado[$i].'" name="ingresarCumplimiento[]"></td>';
+                    <td><input type="number" class="text" size="5" id="ingresarCumplimiento" name="ingresarCumplimiento[]"></td>';
                     echo' 
                     </tr>';
                       $i++;}

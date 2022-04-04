@@ -116,8 +116,107 @@ foreach ($codarea as $area){
         
         if(!empty($row['REALIZADO'])){$realizado[$area] = $row['REALIZADO'];} else {$realizado[$area] = 0;}
         if(!empty($row['META'])){$meta[$area] = $row['META'];} else {$meta[$area] = 0;}
-        if($row['PORCENTAJE'] > 100){$porcentaje[$area] = 100;} elseif(!empty($row['PORCENTAJE'])){$porcentaje[$area] = $row['PORCENTAJE'];} else {$porcentaje[$area] = 0;}
-    
+        
+        $query = "  SELECT SUM(META)AS META, SUM(REALIZADO)AS REALIZADO, T1.CODAREA, T2.DESCRIPCION, T1.ID_PERIODO
+        FROM MTE_METAS_DETALLE T1
+        LEFT JOIN RH_AREAS T2
+        ON T1.CODAREA = T2.CODAREA
+        WHERE ID_META IN (
+            SELECT 
+            ID_META 
+            FROM MTE_METAS 
+            where activa=1 and modalidad <> 'A' and codarea = ".$area." and id_periodo = ".$periodo."
+        )
+        GROUP BY T1.CODAREA, T2.DESCRIPCION, ID_PERIODO";
+
+$stid = oci_parse($conn, $query);
+
+oci_execute($stid, OCI_DEFAULT);
+
+$secciones = [];
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+
+$secciones [] = $row;
+
+}
+//Promedio de porcentajes por sección.
+$k = 0;
+$rendimiento = 0;
+foreach ($secciones as &$seccion) {
+$query = "SELECT T1.*
+FROM MTE_METAS_DETALLE T1
+INNER JOIN MTE_METAS T2
+ON T1.ID_META = T2.ID_META
+WHERE T2.MODALIDAD <> 'A'
+AND T2.ACTIVA = 1
+and t2.id_periodo = ".$seccion["ID_PERIODO"]."
+AND T1.CODAREA =".$seccion["CODAREA"];
+$stid = oci_parse($conn, $query);
+oci_execute($stid, OCI_DEFAULT);
+$metas_adicionales = [];
+$i = 0;
+$sumaPromedios = 0;
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+    if (!empty($row["REALIZADO"])){
+        $calculo = ($row["REALIZADO"]/$row["META"])*100;
+        if ($calculo >100){
+            $calculo =100;
+        }
+        $sumaPromedios = $sumaPromedios + $calculo;
+    }
+    $i++;
+}
+
+
+//Nuevo calculo de rendimiento semanal global
+$cumplimientoPorcentaje = round($sumaPromedios/$i);
+$seccion['cumplimientop'] = $cumplimientoPorcentaje;
+$rendimiento = $rendimiento + $cumplimientoPorcentaje;
+$k++; 
+
+$bar_style = 'progress-bar-success';
+$text_style = 'text-success';
+
+if ($seccion["cumplimientop"] <= 50) {
+    $bar_style = 'progress-bar-danger';
+    $text_style = 'text-danger';
+}elseif ($seccion["cumplimientop"] > 50 && $seccion["cumplimientop"] <= 70) {
+    $bar_style = 'progress-bar-warning';
+    $text_style = 'text-warning';
+}
+if($seccion["cumplimientop"] >100){
+    $seccion["cumplimientop"] =100;
+    }
+$seccion['bar_style'] = $bar_style;
+$seccion['text_style'] = $text_style;
+$seccion['selected'] = false;
+}
+$rendimientoPromedio = 0;
+if($k<>0){
+  $rendimientoPromedio = round($rendimiento/$k);
+}
+
+
+$text_style = 'text-success';
+if ($rendimientoPromedio <= 50) {
+$text_style = 'text-danger';
+}elseif ($rendimientoPromedio> 50 && $rendimientoPromedio <= 70) {
+$text_style = 'text-warning';
+}
+if( $rendimientoPromedio>100){
+$rendimientoPromedio =100;
+}
+
+$response["secciones"] = $secciones;
+$promedio['rendimiento'] = $rendimientoPromedio;
+$promedio['text_style'] = $text_style;
+
+$response["rendimientoSemanalPromedio"] = $promedio;
+
+if($rendimientoPromedio > 100){$porcentaje[$area] = 100;} elseif(!empty($rendimientoPromedio)){$porcentaje[$area] = $rendimientoPromedio;} else {$porcentaje[$area] = 0;}
+
 }
 
 $total_acumulado = round((array_sum($porcentaje) / 7));
@@ -174,7 +273,105 @@ foreach ($codarea2 as $area){
         
         if(!empty($row['REALIZADO'])){$realizado2[$area] = $row['REALIZADO'];} else {$realizado2[$area] = 0;}
         if(!empty($row['META'])){$meta2[$area] = $row['META'];} else {$meta2[$area] = 0;}
-        if($row['PORCENTAJE'] > 100){$porcentaje2[$area] = 100;} elseif(!empty($row['PORCENTAJE'])){$porcentaje2[$area] = $row['PORCENTAJE'];} else {$porcentaje2[$area] = 0;}
+        $query = "  SELECT SUM(META)AS META, SUM(REALIZADO)AS REALIZADO, T1.CODAREA, T2.DESCRIPCION, T1.ID_PERIODO
+        FROM MTE_METAS_DETALLE T1
+        LEFT JOIN RH_AREAS T2
+        ON T1.CODAREA = T2.CODAREA
+        WHERE ID_META IN (
+            SELECT 
+            ID_META 
+            FROM MTE_METAS 
+            where activa=1 and modalidad <> 'A' and codarea = ".$area." and id_periodo = ".$periodo."
+        )
+        GROUP BY T1.CODAREA, T2.DESCRIPCION, ID_PERIODO";
+
+$stid = oci_parse($conn, $query);
+
+oci_execute($stid, OCI_DEFAULT);
+
+$secciones = [];
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+
+$secciones [] = $row;
+
+}
+//Promedio de porcentajes por sección.
+$k = 0;
+$rendimiento = 0;
+foreach ($secciones as &$seccion) {
+$query = "SELECT T1.*
+FROM MTE_METAS_DETALLE T1
+INNER JOIN MTE_METAS T2
+ON T1.ID_META = T2.ID_META
+WHERE T2.MODALIDAD <> 'A'
+AND T2.ACTIVA = 1
+and t2.id_periodo = ".$seccion["ID_PERIODO"]."
+AND T1.CODAREA =".$seccion["CODAREA"];
+$stid = oci_parse($conn, $query);
+oci_execute($stid, OCI_DEFAULT);
+$metas_adicionales = [];
+$i = 0;
+$sumaPromedios = 0;
+
+while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+    if (!empty($row["REALIZADO"])){
+        $calculo = ($row["REALIZADO"]/$row["META"])*100;
+        if ($calculo >100){
+            $calculo =100;
+        }
+        $sumaPromedios = $sumaPromedios + $calculo;
+    }
+    $i++;
+}
+
+
+//Nuevo calculo de rendimiento semanal global
+$cumplimientoPorcentaje = round($sumaPromedios/$i);
+$seccion['cumplimientop'] = $cumplimientoPorcentaje;
+$rendimiento = $rendimiento + $cumplimientoPorcentaje;
+$k++; 
+
+$bar_style = 'progress-bar-success';
+$text_style = 'text-success';
+
+if ($seccion["cumplimientop"] <= 50) {
+    $bar_style = 'progress-bar-danger';
+    $text_style = 'text-danger';
+}elseif ($seccion["cumplimientop"] > 50 && $seccion["cumplimientop"] <= 70) {
+    $bar_style = 'progress-bar-warning';
+    $text_style = 'text-warning';
+}
+if($seccion["cumplimientop"] >100){
+    $seccion["cumplimientop"] =100;
+    }
+$seccion['bar_style'] = $bar_style;
+$seccion['text_style'] = $text_style;
+$seccion['selected'] = false;
+}
+$rendimientoPromedio = 0;
+if($k<>0){
+  $rendimientoPromedio = round($rendimiento/$k);
+}
+
+
+$text_style = 'text-success';
+if ($rendimientoPromedio <= 50) {
+$text_style = 'text-danger';
+}elseif ($rendimientoPromedio> 50 && $rendimientoPromedio <= 70) {
+$text_style = 'text-warning';
+}
+if( $rendimientoPromedio>100){
+$rendimientoPromedio =100;
+}
+
+$response["secciones"] = $secciones;
+$promedio['rendimiento'] = $rendimientoPromedio;
+$promedio['text_style'] = $text_style;
+
+$response["rendimientoSemanalPromedio"] = $promedio;
+
+    if($rendimientoPromedio > 100){$porcentaje2[$area] = 100;} elseif(!empty($rendimientoPromedio)){$porcentaje2[$area] = $rendimientoPromedio;} else {$porcentaje2[$area] = 0;}
     
 }
 
@@ -452,7 +649,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre[$i];?></h3>
-              		<h1 class="widget-user-username" <?php if($porcentaje[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
+              		<h1 class="widget-user-username" <?php if($porcentaje[$cu] < 50){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 70){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	
@@ -460,15 +657,16 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
               		<div class="col-md-8">
               		<table>
                     	<tr>
-                    		<td class="text-left"><h3><b>Meta:</b></h3></td>
+                    		<!-- <td class="text-left"><h3><b>Meta:</b></h3></td>
                     		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    		<td class="text-right"><h3><?php echo number_format($meta[$cu])?></h3></td>
+                    		<td class="text-right"><h3><?php echo number_format($meta[$cu])?></h3></td> -->
                     	</tr>
                     	<tr>
-                    		<td class="text-left"><h3 style="margin-top: 0px"><b>Realizado:</b></h3></td>
+                    		<!-- <td class="text-left"><h3 style="margin-top: 0px"><b>Realizado:</b></h3></td>
                     		<td></td>
                     		<td class="text-right"><h3 style="margin-top: 0px"><?php echo number_format($realizado[$cu])?></h3></td>
-                    	</tr>
+                    	 -->
+                      </tr>
                 	</table>
               		</div>
               		<div class="col-md-2"></div>

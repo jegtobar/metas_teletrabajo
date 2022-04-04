@@ -54,7 +54,7 @@ if (isset($_REQUEST['id_meta'])){
     // }
     
     }
-    $pendiente = $meta - $pendienteAsignar;
+    // $pendiente = $meta - $pendienteAsignar;
       
 
       $inDetalle = 'S';
@@ -131,7 +131,7 @@ if (isset($_REQUEST['id_meta'])){
   </style>
 
 </head>
-<body style="width: 750px">
+<body style="width: 750px" onload="setearMeta(this.form)">
 <div class="wrapper">
 
 
@@ -179,12 +179,12 @@ if (isset($_REQUEST['id_meta'])){
             </div> -->
 
              <div class="input-group mb-3">
-              <!-- <div class="input-group-prepend">
+              <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <label for="mte_meta" style="font-size: 18px">Pendiente de asignación</label>
-                  <input type="text" id="asignacion" class="asignacion" value="<?php if (isset($id_meta)){echo $pendiente;}?>" id="asignacion" name="asignacion" disabled>
+                  <label for="mte_meta" style="font-size: 18px">Meta actual</label>
+                  <input type="text" id="asignacion" class="asignacion" value="" id="asignacion" name="asignacion" disabled>
                 </div>
-              </div> -->
+              </div>
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -224,7 +224,7 @@ if (isset($_REQUEST['id_meta'])){
                   echo'
                     <tr>
                     <td>'.$dependencia[$i].'</td>
-                    <td><input type="text" class="text" value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]"></td>
+                    <td><input type="text" onkeyup="setearMeta(this.form)" class="textMeta" value="'.$detalle_meta[$i].'" id="detalleMetaEdit" name="detalleMetaEdit[]" ></td>
                     <td><a class="fancy btn btn-danger" href="accion_borrar_detalle.php?id_meta='.$id_detalle[$i].'"><i class="fa fa-trash-o"></i></a></td>';
                   echo' 
                     </tr>';
@@ -383,63 +383,71 @@ $('#agregar').on('click',function(){
             echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
           }
        ?>
-    + '</select></td>'+'<td><input type="number" class="Can_Produc" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta"></td></tr>'
+    + '</select></td>'+'<td><input type="number" class="Can_Produc" name="detalleMetaEditNew[]" onchange="setearMeta(this.form)" id="detalleMetaEditNew" placeholder="meta"></td></tr>'
 
     // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
-
+    
     $('#listaSecciones').append(select);
     $('.Can_Produc').keyup(function () {
         const valueActual = document.getElementById('asignacion').value
         var valor = parseInt(valor_inicial);
-        var valor_restar = 0;
+        var valor_sumar = 0;
         $('.Can_Produc').each(function () {
-          if ($(this).val() > 0) {
-            valor_restar += parseInt($(this).val());
-          }
+          
+            valor_sumar += parseInt($(this).val());
+          
         });
-        $('#asignacion').val(valor - valor_restar);
-        const value = document.getElementById('asignacion').value
-        // if (value==0){
-        //   $("#agregar").hide();
-        // }else{
-        //   $("#agregar").show();
-        // }
-      
+        $('#asignacion').val(valor + valor_sumar);
+        const value = document.getElementById('asignacion').value      
     });
+
+    $('.detalleMetaEdit').keyup(function(){
+      var total=0;
+      for(var x=0;x<f.length;x++){//recorremos los campos dentro del form
+          if(f[x].name.indexOf('detalleMetaEdit')!=-1){//si el nombre campo contiene la palabra 'aporte'
+              total+=Number(f[x].value);//sumamos, convirtiendo el contenido del campo a número
+          }
+      }
+      document.getElementById('asignacion').value=total;//al final colocamos la suma en algún input
+    })
      
     
   });
 </script>
 <?php }?>
 
-<?php if ($grabo == 'M'){?>
+<!-- <?php if ($grabo == 'M'){?>
 <script>
 $("#agregar").hide();
 $("#tablaDetalle").hide();
 </script>
-<?php }?>
+<?php }?> -->
 
 <script>
-  var valor_inicial = $('#asignacion').val();
-  $( document ).ready(function() {
-  $('.Can_Produc').keyup(function () {
-        const valueActual = document.getElementById('asignacion').value
-        var valor = parseInt(valor_inicial);
-        var valor_restar = 0;
-        $('.Can_Produc').each(function () {
-          if ($(this).val() > 0) {
-            valor_restar += parseInt($(this).val());
-          }
-        });
-        $('#asignacion').val(valor - valor_restar);
-        const value = document.getElementById('asignacion').value
-        if (value==0){
-          $("#agregar").hide();
-        }else{
-          $("#agregar").show();
+ 
+ function setearMeta(f){
+    var total=0;
+    for(var x=0;x<f.length;x++){//recorremos los campos dentro del form
+        if(f[x].name.indexOf('detalleMetaEdit')!=-1){//si el nombre campo contiene la palabra 'aporte'
+            total+=Number(f[x].value);//sumamos, convirtiendo el contenido del campo a número
         }
+    }
+    document.getElementById('asignacion').value=total;//al final colocamos la suma en algún input
+ }
+
+    $('.Can_Produc').keyup(function () {
+        const valueActual = document.getElementById('asignacion').value
+        var valor = parseInt(valueActual);
+        var valor_sumar = 0;
+        $('.Can_Produc').each(function () {
+            valor_sumar += parseInt($(this).val());
+        });
+        $('#asignacion').val(valor + valor_sumar);
+        const value = document.getElementById('asignacion').value
       
     });
-  });
+
+
 </script>
+
 </html>

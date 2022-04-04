@@ -244,8 +244,6 @@ if (!empty($metas_temporales)){
 }
 
 
-  
-
      echo json_encode($response);
 
 ?>
