@@ -104,14 +104,14 @@
    
     }else{
 
-        if ($rendSemanal<=50){
+        if ($rendSemanal<=61){
 
             $colorText = 'text-danger';
             $bar_style = 'progress-bar-danger';
 
             $rendimientoSemanal = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendSemanal.'%">';
         
-        }else if($rendSemanal>50 && $rendSemanal<=70){
+        }else if($rendSemanal>=62 && $rendSemanal<=79){
 
             $colorText = 'text-danger';
             $bar_style = 'progress-bar-warning';
@@ -168,14 +168,14 @@
     $realizadoPoa = $row['REALIZADO'];
     $rendPoaSemanal = $realizadoPoa ? round(($realizadoPoa/$metaPoa)*100) : 0;
 
-    if ($rendPoaSemanal<=50){
+    if ($rendPoaSemanal<=61){
 
         $colorText = 'text-danger';
         $bar_style = 'progress-bar-danger';
 
         $rendimientoPoa = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
     
-    }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
+    }else if($rendPoaSemanal>=62 && $rendPoaSemanal<=79){
 
         $colorText = 'text-warning';
         $bar_style = 'progress-bar-warning';
@@ -202,7 +202,12 @@
         'meta'=>number_format($metaPoa),
         'realizado'=>number_format($realizadoPoa)
     ];
-
+/*POA GLOBAL aplica unicamente para:
+    Coordinación Técnica 33
+    Coordinación del IUSI 34 
+    Coordinación Catastral  48
+    Coordinación Jurídica 35
+*/
     $colorText="";
     $bar_style="";
     $programado=0;
@@ -239,10 +244,10 @@
         }
     }
 
-    if($porcentajePoa<50){
+    if($porcentajePoa<=61){
         $colorText = 'text-danger';
         $bar_style = 'progress-bar-danger';
-    }else if($porcentajePoa>50 && $porcentajePoa <=70){
+    }else if($porcentajePoa>=62 && $porcentajePoa <=79){
         $colorText = 'text-warning';
         $bar_style = 'progress-bar-warning';
     } else{
@@ -254,6 +259,7 @@
     $rendPoaProgramado['programado']=number_format($programado);
     $rendPoaProgramado['ejecutado']=number_format($ejecutado);
     $rendPoaProgramado['porcentaje']=$porcentajePoa;
+/*Fin calculo Poa Global */
 
     $response['rendimiento_poa_programado'] = $rendPoaProgramado;
     $response['rendimiento_poa'] = $rendimiento_poa;
@@ -264,9 +270,9 @@
     $realizadoGlobal = $realizadoTotal + $realizadoPoa;
     $metaGlobal = $metaTotal + $metaPoa;
     $rendimiento = round((( $realizadoGlobal/$metaGlobal)*100));
-    if ($rendimiento<=50){
+    if ($rendimiento<=61){
         $colorText = 'text-danger';
-    }else if($rendimiento>50 && $rendimiento<=70){
+    }else if($rendimiento>=62 && $rendimiento<=79){
         $colorText = 'text-warning';
     }else{
         $colorText = 'text-success';
@@ -347,10 +353,10 @@
         $bar_style = 'progress-bar-success';
         $text_style = 'text-success';
 
-        if ($seccion["cumplimientop"] <= 50) {
+        if ($seccion["cumplimientop"] <= 61) {
             $bar_style = 'progress-bar-danger';
             $text_style = 'text-danger';
-        }elseif ($seccion["cumplimientop"] > 50 && $seccion["cumplimientop"] <= 70) {
+        }elseif ($seccion["cumplimientop"] >= 62 && $seccion["cumplimientop"] <= 79) {
             $bar_style = 'progress-bar-warning';
             $text_style = 'text-warning';
         }
@@ -364,9 +370,9 @@
 
     $rendimientoPromedio = round($rendimiento/$k);
         $text_style = 'text-success';
-    if ($rendimientoPromedio <= 50) {
+    if ($rendimientoPromedio <= 61) {
         $text_style = 'text-danger';
-    }elseif ($rendimientoPromedio> 50 && $rendimientoPromedio <= 70) {
+    }elseif ($rendimientoPromedio>= 62 && $rendimientoPromedio <= 79) {
         $text_style = 'text-warning';
     }
     if( $rendimientoPromedio>100){

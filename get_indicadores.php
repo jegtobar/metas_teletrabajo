@@ -238,7 +238,66 @@
         'meta'=>number_format($metaPoa),
         'realizado'=>number_format($realizadoPoa)
     ];
+/*POA GLOBAL aplica unicamente para:
+    Coordinación Técnica 33
+    Coordinación del IUSI 34 
+    Coordinación Catastral  48
+    Coordinación Jurídica 35
+*/
+$colorText="";
+$bar_style="";
+$programado=0;
+$ejecutado=0;
+$porcentajePoa=0;
 
+if ($codarea == 33){
+    $programado = 15415;
+    $ejecutado = 17661;
+    $porcentajePoa = round(($ejecutado/$programado)*100);
+    if ($porcentajePoa >100){
+        $porcentajePoa = 100;
+    }
+}else if ($codarea == 34){
+    $programado = 169347;
+    $ejecutado = 164019;
+    $porcentajePoa = round(($ejecutado/$programado)*100);
+    if ($porcentajePoa >100){
+        $porcentajePoa = 100;
+    }
+}else if ($codarea == 48){
+    $programado = 3226;
+    $ejecutado = 3319;
+    $porcentajePoa = round(($ejecutado/$programado)*100);
+    if ($porcentajePoa >100){
+        $porcentajePoa = 100;
+    }
+}else if ($codarea == 35){
+    $programado = 10552;
+    $ejecutado = 3883;
+    $porcentajePoa = round(($ejecutado/$programado)*100);
+    if ($porcentajePoa >100){
+        $porcentajePoa = 100;
+    }
+}
+
+if($porcentajePoa<=50){
+    $colorText = 'text-danger';
+    $bar_style = 'progress-bar-danger';
+}else if($porcentajePoa>50 && $porcentajePoa <=70){
+    $colorText = 'text-warning';
+    $bar_style = 'progress-bar-warning';
+} else{
+    $colorText = 'text-success';
+    $bar_style = 'progress-bar-success';
+}
+$rendPoaProgramado['text_style']=$colorText;
+$rendPoaProgramado['bar_style']=$bar_style;
+$rendPoaProgramado['programado']=number_format($programado);
+$rendPoaProgramado['ejecutado']=number_format($ejecutado);
+$rendPoaProgramado['porcentaje']=$porcentajePoa;
+/*Fin calculo Poa Global */
+
+$response['rendimiento_poa_programado'] = $rendPoaProgramado;
     $response['rendimiento_poa'] = $rendimiento_poa;
    
     /*Fin indicador POA */
@@ -255,14 +314,16 @@
         $colorText = 'text-success';
     }
     if($rendimiento>100){
-        $rendimiento = 100;
+        $rendimiento = 100; 
     }
+
     $rendimiento_global = [
         'rendimiento'=>$rendimiento,
         'text_style'=>$colorText
     ];
     $response['rendimiento_global'] = $rendimiento_global;
     /*FIN PORCENTAJE GLOBAL RENDIMIENTO */
+
     
     /*Indicadores detalle por sección */
 

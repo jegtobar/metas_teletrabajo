@@ -420,7 +420,7 @@
                 <div class="row">
                     <div class="col-md-12 text-center">
                     <h2>Rendimiento: </h2>    
-                    <h2 :class="rendimiento_poa.text_style">
+                    <h2 :class="rendimientoPoaProgramado.text_style">
                            <b> {{ rendimientoPoaProgramado.porcentaje}}%<b/>
                         </h2>
                     </div>

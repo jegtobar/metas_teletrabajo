@@ -44,9 +44,9 @@
           }else{
                $calculo = round(($row["REALIZADO"]/$row["META"])*100);
           }
-          if($calculo<=50){
+          if($calculo<=61){
                $colorText='text-danger';
-          }elseif($calculo>50 and $calculo<=70){
+          }elseif($calculo>=62 and $calculo<=79){
                $colorText='text-warning';
           }else{
            $colorText='text-success';
@@ -102,9 +102,9 @@
           }else{
                $calculo = round(($row["REALIZADO"]/$row["META"])*100);
           }
-          if($calculo<=50){
+          if($calculo<=61){
                $colorText='text-danger';
-          }elseif($calculo>50 and $calculo<=70){
+          }elseif($calculo>=62 and $calculo<=79){
                $colorText='text-warning';
           }else{
            $colorText='text-success';
@@ -161,9 +161,9 @@
           }else{
                $calculo = round(($row["REALIZADO"]/$row["META"])*100);
           }
-          if($calculo<=50){
+          if($calculo<=61){
                $colorText='text-danger';
-          }elseif($calculo>50 and $calculo<=70){
+          }elseif($calculo>=62 and $calculo<=79){
                $colorText='text-warning';
           }else{
            $colorText='text-success';
@@ -220,9 +220,9 @@ if ($row["REALIZADO"]==0){
 }else{
     $calculo = round(($row["REALIZADO"]/$row["META"])*100);
 }
-if($calculo<=50){
+if($calculo<=61){
     $colorText='text-danger';
-}elseif($calculo>50 and $calculo<=70){
+}elseif($calculo>=62 and $calculo<=79){
     $colorText='text-warning';
 }else{
 $colorText='text-success';

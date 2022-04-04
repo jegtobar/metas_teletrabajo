@@ -369,7 +369,10 @@
 
             },
             fetchDetail(seccion){
-
+                this.secciones.forEach(element => {
+                    element.selected = false
+                });
+                seccion.selected = true
                 fetch('get_detalle_indicadores.php', {
                     method: 'POST',
                     mode: 'no-cors',

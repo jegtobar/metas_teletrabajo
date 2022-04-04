@@ -557,7 +557,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
                     </div>
             	</div>
             	<div class="col-md-3" style="padding-left: 0px">
-            		<h1 <?php if($total_acumulado < 76){echo 'style="color: #e82113; font-size: 50px"';}elseif($total_acumulado < 86){echo 'style="color: #e8c113; font-size: 50px"';}else{echo 'style="color: #2f8c18; font-size: 50px"';}?>><b><?php echo $total_acumulado?>%</b></h1>
+            		<h1 <?php if($total_acumulado <= 61){echo 'style="color: #ff0000; font-size: 50px"';}elseif($total_acumulado >=62 && $total_acumulado <= 79){echo 'style="color: #ff5100; font-size: 50px"';}else{echo 'style="color: #2f8c18; font-size: 50px"';}?>><b><?php echo $total_acumulado?>%</b></h1>
             	</div>
 
               <!-- <div class="col-md-3" style="padding-left: 0px">
@@ -620,7 +620,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
                     </div>
             	</div>
             	<div class="col-md-3" style="padding-left: 0px">
-            		<h1 <?php if($total_acumulado2 < 76){echo 'style="color: #e82113; font-size: 50px"';}elseif($total_acumulado2 < 86){echo 'style="color: #e8c113; font-size: 50px"';}else{echo 'style="color: #2f8c18; font-size: 50px"';}?>><b><?php echo $total_acumulado2?>%</b></h1>
+            		<h1 <?php if($total_acumulado2 <= 61 ){echo 'style="color: #ff0000; font-size: 50px"';}elseif($total_acumulado2 >= 62 && $total_acumulado2 <= 79){echo 'style="color: #ff5100; font-size: 50px"';}else{echo 'style="color: #2f8c18; font-size: 50px"';}?>><b><?php echo $total_acumulado2?>%</b></h1>
             	</div>
 
               <!-- <div class="col-md-3" style="padding-left: 0px">
@@ -651,7 +651,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
                   
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre[$i];?></h3>
                   <br>
-                  <h1 class="widget-user-username" <?php if($porcentaje[$cu] < 50){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 70){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
+                  <h1 class="widget-user-username" <?php if($porcentaje[$cu] <= 61){echo 'style="color: #ff0000; font-size: 40px"';}elseif($porcentaje[$cu]>=62 && $porcentaje[$cu] <= 79){echo 'style="color:#ff5100; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	
@@ -696,7 +696,7 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre2[$i];?></h3>
                   <br>
-                  <h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1>
+                  <h1 class="widget-user-username" <?php if($porcentaje2[$cu] <= 61){echo 'style="color: #ff0000; font-size: 40px"';}elseif($porcentaje2[$cu] >=62 && $porcentaje2[$cu] <= 79){echo 'style="color: #ff5100; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	
