@@ -648,8 +648,10 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
             	<br>
                 <div class="text-center">
+                  
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre[$i];?></h3>
-              		<h1 class="widget-user-username" <?php if($porcentaje[$cu] < 50){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 70){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
+                  <br>
+                  <h1 class="widget-user-username" <?php if($porcentaje[$cu] < 50){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje[$cu] < 70){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	
@@ -693,7 +695,8 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<br>
                 <div class="text-center">
                 	<h3 class="widget-user-username" style="color: #181e8c; font-size: 32px; height: 70px"><?php echo $nombre2[$i];?></h3>
-              		<h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1>
+                  <br>
+                  <h1 class="widget-user-username" <?php if($porcentaje2[$cu] < 76){echo 'style="color: #e82113; font-size: 40px"';}elseif($porcentaje2[$cu] < 86){echo 'style="color: #e8c113; font-size: 40px"';}else{echo 'style="color: #2f8c18; font-size: 40px"';}?>><b><?php echo $porcentaje2[$cu]?>%</b></h1>
                 </div>
               	<div class="row">
               	
@@ -701,14 +704,14 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
               		<div class="col-md-8">
               		<table>
                     	<tr>
-                    		<td class="text-left"><h3><b>Meta:</b></h3></td>
+                    		<!-- <td class="text-left"><h3><b>Meta:</b></h3></td>
                     		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    		<td class="text-right"><h3><?php echo number_format($meta2[$cu])?></h3></td>
+                    		<td class="text-right"><h3><?php echo number_format($meta2[$cu])?></h3></td> -->
                     	</tr>
                     	<tr>
-                    		<td class="text-left"><h3 style="margin-top: 0px"><b>Realizado:</b></h3></td>
+                    		<!-- <td class="text-left"><h3 style="margin-top: 0px"><b>Realizado:</b></h3></td>
                     		<td></td>
-                    		<td class="text-right"><h3 style="margin-top: 0px"><?php echo number_format($realizado2[$cu])?></h3></td>
+                    		<td class="text-right"><h3 style="margin-top: 0px"><?php echo number_format($realizado2[$cu])?></h3></td> -->
                     	</tr>
                 	</table>
               		</div>
