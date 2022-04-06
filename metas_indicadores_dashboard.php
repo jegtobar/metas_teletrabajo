@@ -330,7 +330,7 @@
         <br>
 
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Adicionales</a></li>
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Actividades Adicionales | Actividades que no forman parte del porcentaje de rendimiento.</a></li>
         </ul>
 
         <br>
@@ -568,6 +568,7 @@
                 this.metas_poa = data.metas_poa
                 this.metas_regulares = data.metas_regulares
                 this.metas_adicionales = data.metas_adicionales
+                this.metas_temporales = data.metas_temporales
                
             })
             }

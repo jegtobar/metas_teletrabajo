@@ -557,6 +557,7 @@
                 this.metas_poa = data.metas_poa
                 this.metas_regulares = data.metas_regulares
                 this.metas_adicionales = data.metas_adicionales
+                this.metas_temporales = data.metas_temporales
                 })
             }
 

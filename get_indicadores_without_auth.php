@@ -34,6 +34,7 @@
             LEFT JOIN mte_metas_detalle b ON a.id_meta = b.id_meta
            WHERE a.codarea = ".$codarea."
                  AND a.id_periodo = ".$periodo_vigente."
+                 and a.activa = 1
            GROUP BY a.id_meta,
                  a.nombre,
                  a.tipo,
