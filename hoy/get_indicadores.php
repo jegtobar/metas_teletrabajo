@@ -204,14 +204,14 @@
     $rendPoaSemanal = $realizadoPoa ? round(($realizadoPoa/$metaPoa)*100) : 0;
     
 
-    if ($rendPoaSemanal<=61){
+    if ($rendPoaSemanal<=50){
 
         $colorText = 'text-danger';
         $bar_style = 'progress-bar-danger';
 
         $rendimientoPoa = '<div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width:'.$rendPoaSemanal.'%">';
     
-    }else if($rendPoaSemanal>=62 && $rendPoaSemanal<=79){
+    }else if($rendPoaSemanal>50 && $rendPoaSemanal<=70){
 
         $colorText = 'text-warning';
         $bar_style = 'progress-bar-warning';
@@ -271,33 +271,33 @@ if ($codarea == 33){
     if ($porcentajePoa >100){
         $porcentajePoa = 100;
     }
-    }else if ($codarea == 35){
-        $programado = 10552;
-        $ejecutado = 3883;
-        $porcentajePoa = round(($ejecutado/$programado)*100);
-        if ($porcentajePoa >100){
-            $porcentajePoa = 100;
-        }
+}else if ($codarea == 35){
+    $programado = 10552;
+    $ejecutado = 3883;
+    $porcentajePoa = round(($ejecutado/$programado)*100);
+    if ($porcentajePoa >100){
+        $porcentajePoa = 100;
     }
+}
 
-    if($porcentajePoa<=50){
-        $colorText = 'text-danger';
-        $bar_style = 'progress-bar-danger';
-    }else if($porcentajePoa>50 && $porcentajePoa <=70){
-        $colorText = 'text-warning';
-        $bar_style = 'progress-bar-warning';
-    } else{
-        $colorText = 'text-success';
-        $bar_style = 'progress-bar-success';
-    }
-    $rendPoaProgramado['text_style']=$colorText;
-    $rendPoaProgramado['bar_style']=$bar_style;
-    $rendPoaProgramado['programado']=number_format($programado);
-    $rendPoaProgramado['ejecutado']=number_format($ejecutado);
-    $rendPoaProgramado['porcentaje']=$porcentajePoa;
+if($porcentajePoa<=50){
+    $colorText = 'text-danger';
+    $bar_style = 'progress-bar-danger';
+}else if($porcentajePoa>50 && $porcentajePoa <=70){
+    $colorText = 'text-warning';
+    $bar_style = 'progress-bar-warning';
+} else{
+    $colorText = 'text-success';
+    $bar_style = 'progress-bar-success';
+}
+$rendPoaProgramado['text_style']=$colorText;
+$rendPoaProgramado['bar_style']=$bar_style;
+$rendPoaProgramado['programado']=number_format($programado);
+$rendPoaProgramado['ejecutado']=number_format($ejecutado);
+$rendPoaProgramado['porcentaje']=$porcentajePoa;
 /*Fin calculo Poa Global */
 
-    $response['rendimiento_poa_programado'] = $rendPoaProgramado;
+$response['rendimiento_poa_programado'] = $rendPoaProgramado;
     $response['rendimiento_poa'] = $rendimiento_poa;
    
     /*Fin indicador POA */
@@ -306,9 +306,9 @@ if ($codarea == 33){
     $realizadoGlobal = $realizadoTotal + $realizadoPoa;
     $metaGlobal = $metaTotal + $metaPoa;
     $rendimiento = round((( $realizadoGlobal/$metaGlobal)*100));
-    if ($rendimiento<=61){
+    if ($rendimiento<=50){
         $colorText = 'text-danger';
-    }else if($rendimiento>=62 && $rendimiento<=79){
+    }else if($rendimiento>50 && $rendimiento<=70){
         $colorText = 'text-warning';
     }else{
         $colorText = 'text-success';
@@ -327,7 +327,7 @@ if ($codarea == 33){
     
     /*Indicadores detalle por sección */
 
-    $query = "  SELECT SUM(META) AS META, SUM(REALIZADO) AS REALIZADO, T1.CODAREA, T2.DESCRIPCION, T1.ID_PERIODO
+    $query = "  SELECT SUM(META) AS META, SUM(REALIZADO) AS REALIZADO, T1.CODAREA, T2.DESCRIPCION 
                 FROM MTE_METAS_DETALLE T1
                 LEFT JOIN RH_AREAS T2
                 ON T1.CODAREA = T2.CODAREA
@@ -337,7 +337,8 @@ if ($codarea == 33){
                     FROM MTE_METAS 
                     where activa=1 and modalidad <> 'A' and codarea = ".$codarea." and id_periodo = ".$periodo_vigente."
                 )
-                GROUP BY T1.CODAREA, T2.DESCRIPCION, ID_PERIODO";
+                GROUP BY T1.CODAREA, T2.DESCRIPCION
+            ";
 
     $stid = oci_parse($conn, $query);
 
@@ -350,49 +351,20 @@ if ($codarea == 33){
         $secciones [] = $row;
 
     }
-    //Promedio de porcentajes por sección.
-    $k = 0;
-    $rendimiento = 0;
+
     foreach ($secciones as &$seccion) {
-        $query = "SELECT T1.*
-        FROM MTE_METAS_DETALLE T1
-        INNER JOIN MTE_METAS T2
-        ON T1.ID_META = T2.ID_META
-        WHERE T2.MODALIDAD <> 'A'
-        AND T2.ACTIVA = 1
-        and t2.id_periodo = ".$seccion["ID_PERIODO"]."
-        AND T1.CODAREA =".$seccion["CODAREA"];
-        $stid = oci_parse($conn, $query);
-        oci_execute($stid, OCI_DEFAULT);
-        $metas_adicionales = [];
-        $i = 0;
-        $sumaPromedios = 0;
 
-        while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
-            if (!empty($row["REALIZADO"])){
-                $calculo = ($row["REALIZADO"]/$row["META"])*100;
-                if ($calculo >100){
-                    $calculo =100;
-                }
-                $sumaPromedios = $sumaPromedios + $calculo;
-            }
-            $i++;
-        }
+        $cumplimientoDetalle = round(($seccion["REALIZADO"]/$seccion["META"])*100);
 
-
-        //Nuevo calculo de rendimiento semanal global
-        $cumplimientoPorcentaje = round($sumaPromedios/$i);
-        $seccion['cumplimientop'] = $cumplimientoPorcentaje;
-        $rendimiento = $rendimiento + $cumplimientoPorcentaje;
-        $k++; 
+        $seccion['cumplimientop']= $cumplimientoDetalle;
 
         $bar_style = 'progress-bar-success';
         $text_style = 'text-success';
 
-        if ($seccion["cumplimientop"] <= 61) {
+        if ($seccion["cumplimientop"] <= 50) {
             $bar_style = 'progress-bar-danger';
             $text_style = 'text-danger';
-        }elseif ($seccion["cumplimientop"] >= 62 && $seccion["cumplimientop"] <= 79) {
+        }elseif ($seccion["cumplimientop"] > 50 && $seccion["cumplimientop"] <= 70) {
             $bar_style = 'progress-bar-warning';
             $text_style = 'text-warning';
         }
@@ -401,22 +373,12 @@ if ($codarea == 33){
             }
         $seccion['bar_style'] = $bar_style;
         $seccion['text_style'] = $text_style;
-        $seccion['selected'] = false;
+
+
     }
 
-    $rendimientoPromedio = round($rendimiento/$k);
-        $text_style = 'text-success';
-    if ($rendimientoPromedio <= 61) {
-        $text_style = 'text-danger';
-    }elseif ($rendimientoPromedio>= 62 && $rendimientoPromedio <= 79) {
-        $text_style = 'text-warning';
-    }
-    if( $rendimientoPromedio>100){
-        $rendimientoPromedio =100;
-        }
     $response["secciones"] = $secciones;
-    $promedio['rendimiento'] = $rendimientoPromedio;
-    $promedio['text_style'] = $text_style;
-    $response["rendimientoSemanalPromedio"] = $promedio;
+
     echo json_encode($response);
+    
 ?>
