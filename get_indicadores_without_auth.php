@@ -238,7 +238,7 @@
         }
     }else if ($codarea == 35){
         $programado = 10552;
-        $ejecutado = 3883;
+        $ejecutado = 13239;
         $porcentajePoa = round(($ejecutado/$programado)*100);
         if ($porcentajePoa >100){
             $porcentajePoa = 100;

@@ -129,98 +129,100 @@ foreach ($codarea as $area){
         )
         GROUP BY T1.CODAREA, T2.DESCRIPCION, ID_PERIODO";
 
-$stid = oci_parse($conn, $query);
+  $stid = oci_parse($conn, $query);
 
-oci_execute($stid, OCI_DEFAULT);
+  oci_execute($stid, OCI_DEFAULT);
 
-$secciones = [];
+  $secciones = [];
 
-while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+  while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
 
-$secciones [] = $row;
+  $secciones [] = $row;
 
-}
-//Promedio de porcentajes por sección.
-$k = 0;
-$rendimiento = 0;
-foreach ($secciones as &$seccion) {
-$query = "SELECT T1.*
-FROM MTE_METAS_DETALLE T1
-INNER JOIN MTE_METAS T2
-ON T1.ID_META = T2.ID_META
-WHERE T2.MODALIDAD <> 'A'
-AND T2.ACTIVA = 1
-and t2.id_periodo = ".$seccion["ID_PERIODO"]."
-AND T1.CODAREA =".$seccion["CODAREA"];
-$stid = oci_parse($conn, $query);
-oci_execute($stid, OCI_DEFAULT);
-$metas_adicionales = [];
-$i = 0;
-$sumaPromedios = 0;
+  }
+  //Promedio de porcentajes por sección.
+  $k = 0;
+  $rendimiento = 0;
+  foreach ($secciones as &$seccion) {
+    $query = "SELECT T1.*
+    FROM MTE_METAS_DETALLE T1
+    INNER JOIN MTE_METAS T2
+    ON T1.ID_META = T2.ID_META
+    WHERE T2.MODALIDAD <> 'A'
+    AND T2.ACTIVA = 1
+    and t2.id_periodo = ".$seccion["ID_PERIODO"]."
+    AND T1.CODAREA =".$seccion["CODAREA"];
+    $stid = oci_parse($conn, $query);
+    oci_execute($stid, OCI_DEFAULT);
+    $metas_adicionales = [];
+    $i = 0;
+    $sumaPromedios = 0;
 
-while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
-    if (!empty($row["REALIZADO"])){
-        $calculo = ($row["REALIZADO"]/$row["META"])*100;
-        if ($calculo >100){
-            $calculo =100;
+    while ($row = oci_fetch_array($stid, OCI_ASSOC+OCI_RETURN_NULLS)) {
+        if (!empty($row["REALIZADO"])){
+            $calculo = ($row["REALIZADO"]/$row["META"])*100;
+            if ($calculo >100){
+                $calculo =100;
+            }
+            $sumaPromedios = $sumaPromedios + $calculo;
         }
-        $sumaPromedios = $sumaPromedios + $calculo;
+        $i++;
     }
-    $i++;
-}
 
 
-//Nuevo calculo de rendimiento semanal global
-$cumplimientoPorcentaje = round($sumaPromedios/$i);
-$seccion['cumplimientop'] = $cumplimientoPorcentaje;
-$rendimiento = $rendimiento + $cumplimientoPorcentaje;
-$k++; 
+    //Nuevo calculo de rendimiento semanal global
+    $cumplimientoPorcentaje = round($sumaPromedios/$i);
+    $seccion['cumplimientop'] = $cumplimientoPorcentaje;
+    $rendimiento = $rendimiento + $cumplimientoPorcentaje;
+    $k++; 
 
-$bar_style = 'progress-bar-success';
-$text_style = 'text-success';
+    $bar_style = 'progress-bar-success';
+    $text_style = 'text-success';
 
-if ($seccion["cumplimientop"] <= 50) {
-    $bar_style = 'progress-bar-danger';
-    $text_style = 'text-danger';
-}elseif ($seccion["cumplimientop"] > 50 && $seccion["cumplimientop"] <= 70) {
-    $bar_style = 'progress-bar-warning';
-    $text_style = 'text-warning';
-}
-if($seccion["cumplimientop"] >100){
-    $seccion["cumplimientop"] =100;
+    if ($seccion["cumplimientop"] <= 50) {
+        $bar_style = 'progress-bar-danger';
+        $text_style = 'text-danger';
+    }elseif ($seccion["cumplimientop"] > 50 && $seccion["cumplimientop"] <= 70) {
+        $bar_style = 'progress-bar-warning';
+        $text_style = 'text-warning';
     }
-$seccion['bar_style'] = $bar_style;
-$seccion['text_style'] = $text_style;
-$seccion['selected'] = false;
-}
-$rendimientoPromedio = 0;
-if($k<>0){
-  $rendimientoPromedio = round($rendimiento/$k);
-}
+    if($seccion["cumplimientop"] >100){
+        $seccion["cumplimientop"] =100;
+        }
+    $seccion['bar_style'] = $bar_style;
+    $seccion['text_style'] = $text_style;
+    $seccion['selected'] = false;
+  }
+
+  $rendimientoPromedio = 0;
+  if($k<>0){
+    $rendimientoPromedio = round($rendimiento/$k);
+  }
 
 
-$text_style = 'text-success';
-if ($rendimientoPromedio <= 50) {
-$text_style = 'text-danger';
-}elseif ($rendimientoPromedio> 50 && $rendimientoPromedio <= 70) {
-$text_style = 'text-warning';
-}
-if( $rendimientoPromedio>100){
-$rendimientoPromedio =100;
-}
+  $text_style = 'text-success';
+  if ($rendimientoPromedio <= 50) {
+  $text_style = 'text-danger';
+  }elseif ($rendimientoPromedio> 50 && $rendimientoPromedio <= 70) {
+  $text_style = 'text-warning';
+  }
+  if( $rendimientoPromedio>100){
+  $rendimientoPromedio =100;
+  }
 
-$response["secciones"] = $secciones;
-$promedio['rendimiento'] = $rendimientoPromedio;
-$promedio['text_style'] = $text_style;
+  $response["secciones"] = $secciones;
+  $promedio['rendimiento'] = $rendimientoPromedio;
+  $promedio['text_style'] = $text_style;
+  $response["rendimientoSemanalPromedio"] = $promedio;
 
-$response["rendimientoSemanalPromedio"] = $promedio;
-
-if($rendimientoPromedio > 100){$porcentaje[$area] = 100;} elseif(!empty($rendimientoPromedio)){$porcentaje[$area] = $rendimientoPromedio;} else {$porcentaje[$area] = 0;}
+  if($rendimientoPromedio > 100){$porcentaje[$area] = 100;} elseif(!empty($rendimientoPromedio)){$porcentaje[$area] = $rendimientoPromedio;} else {$porcentaje[$area] = 0;}
 
 }
 
 $total_acumulado = round((array_sum($porcentaje) / 7));
-
+if ($total_acumulado>100){
+  $total_acumulado=100;
+}
 $query = "SELECT a.codarea,
                  b.nombre as descripcion,
                  b.icon,
