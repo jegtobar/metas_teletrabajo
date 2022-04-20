@@ -256,6 +256,9 @@ if (isset($_REQUEST['id_meta'])){
                       <td>
                         <input type="number" class="Can_Produc" name="detalleMetaEditNew[]" id="detalleMetaEditNew" placeholder="meta">
                       </td>
+                      <td>
+                      
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -376,18 +379,23 @@ $('#cerrar').on('click',function(){
 <script>
 
 $('#agregar').on('click',function(){
-    let select = '<tr><td><select class="form-control" name="seccionDetalleNew[]">' +
+    let select = '<tr id="newItem"><td><select class="form-control" name="seccionDetalleNew[]" >' +
        '<option disabled selected="selected" value="N">Seleccione una sección...</option>' +
        <?php 
           foreach($data as $value){
             echo "'".'<option value="'.$value['codarea'].'">' . $value['descripcion']. '</option>'."'".'+'; 
           }
        ?>
-    + '</select></td>'+'<td><input type="number" class="Can_Produc" name="detalleMetaEditNew[]" onchange="setearMeta(this.form)" id="detalleMetaEditNew" placeholder="meta"></td></tr>'
+    + '</select></td>'+'<td><input type="number" class="Can_Produc" name="detalleMetaEditNew[]" onchange="setearMeta(this.form)" id="detalleMetaEditNew" placeholder="meta"></td><td><button type="button" class="btn btn-danger" id="removerItem"><i class="fa fa-trash-o"></i></button></td></tr>'
 
     // let remover = '<br><button type="button" class="btn btn-danger" id="remover">Remover</button>'
     
     $('#listaSecciones').append(select);
+
+    $(document).on('click', '#removerItem', function () {
+      $(this).closest('#newItem').remove();
+    });
+
     $('.Can_Produc').keyup(function () {
         const valueActual = document.getElementById('asignacion').value
         var valor = parseInt(valor_inicial);
@@ -413,6 +421,7 @@ $('#agregar').on('click',function(){
      
     
   });
+ 
 </script>
 <?php }?>
 
@@ -447,7 +456,6 @@ $("#tablaDetalle").hide();
       
     });
 
-
+    
 </script>
-
 </html>
