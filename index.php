@@ -53,6 +53,8 @@ $vigente = $row['VIGENTE'];
 $anio = $row['ANIO'];
 $mes = $row['MES'];
 
+$porcentaje_iusi = 0;
+
 $query = "SELECT a.codarea,
                  b.nombre as descripcion,
                  b.icon,
@@ -199,7 +201,6 @@ foreach ($codarea as $area){
     $rendimientoPromedio = round($rendimiento/$k);
   }
 
-
   $text_style = 'text-success';
   if ($rendimientoPromedio <= 50) {
   $text_style = 'text-danger';
@@ -216,13 +217,16 @@ foreach ($codarea as $area){
   $response["rendimientoSemanalPromedio"] = $promedio;
 
   if($rendimientoPromedio > 100){$porcentaje[$area] = 100;} elseif(!empty($rendimientoPromedio)){$porcentaje[$area] = $rendimientoPromedio;} else {$porcentaje[$area] = 0;}
-
+  
 }
+$porcentaje_iusi=$porcentaje[34];
 
-$total_acumulado = round((array_sum($porcentaje) / 7));
+$total_acumulado = round((array_sum($porcentaje) / 8));
 if ($total_acumulado>100){
   $total_acumulado=100;
 }
+
+
 $query = "SELECT a.codarea,
                  b.nombre as descripcion,
                  b.icon,
@@ -384,8 +388,8 @@ $diaact = date('d');
 $mesact = date('m');
 $aniact = date('Y');
 
-$query = "SELECT ROUND(sum(to_number(proyeccion_solvente))/1000000) AS proyeccion_solvente,
-                 ROUND(sum(to_number(proyeccion_mora))/1000000) AS proyeccion_mora                     
+$query = "SELECT sum(to_number(proyeccion_solvente))/1000000 AS proyeccion_solvente,
+                 sum(to_number(proyeccion_mora))/1000000 AS proyeccion_mora                     
             FROM tbl_proyeccion_pagos
            WHERE to_char(fecha,'YYYY') = '". $aniact ."'
        and to_char(fecha,'MM') <= '".$mesact."'";
@@ -395,8 +399,8 @@ oci_execute($stid, OCI_DEFAULT);
 
 while($row = oci_fetch_array($stid, OCI_ASSOC))
 {
-    $proyeccion_solvente = doubleval($row['PROYECCION_SOLVENTE']);
-    $proyeccion_mora     = doubleval($row['PROYECCION_MORA']);
+    $proyeccion_solvente = str_replace(',','.',$row['PROYECCION_SOLVENTE']);
+    $proyeccion_mora     = str_replace(',','.',$row['PROYECCION_MORA']);
 }
 
 $meta_ingreso = $proyeccion_solvente + $proyeccion_mora;
@@ -438,6 +442,8 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
     $ingreso   = doubleval($row['MONTO_ACTUAL']);
     //$ingreso_anterior = doubleval($row['MONTO_ANTERIOR']);
 }
+
+$promedio_global_dcai = round(($total_acumulado + $porcentaje_iusi + $total_acumulado2)/3)
 
 ?>
 
@@ -529,11 +535,14 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             	<div class="col-md-1">
             		<img class="img-circle" src="img/nuevo/mcarcamo.jpg" alt="User Image" height="100px">
             	</div>
-            	<div class="col-md-11" style="padding-top: 20px">
+            	<div class="col-md-9" style="padding-top: 20px">
             		<div>
                     	<h3 class="widget-user-username" style="font-size: 32px"><b>Dirección de Catastro y Administración del IUSI</b></h3>
                     </div>
             	</div>
+              <div class="col-md-2">
+                <h1 <?php if($promedio_global_dcai <= 61){echo 'style="color: #ff0000; font-size: 50px"';}elseif($promedio_global_dcai >=62 && $promedio_global_dcai <= 79){echo 'style="color: #ff5100; font-size: 50px"';}else{echo 'style="color: #2f8c18; font-size: 50px"';}?>><b><?php echo $promedio_global_dcai?>%</b></h1>
+              </div>
             
             </div>
           </div>
@@ -583,19 +592,33 @@ while($row = oci_fetch_array($stid, OCI_ASSOC))
             		<div>
                     	<h3 class="widget-user-username"><b>Subdirección </b></h3>
                   		<h1 class="widget-user-username"><b>del IUSI</b></h1>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                         <h1 style="font-size: 36px;color: #181e8c;margin-top:10px"><b>QTZ <?php echo $meta_ingreso?>M</b></h1> 
                     </div>
+                </div>
             	</div>
-            	<!-- <div class="col-md-4" style="padding-left: 0px">
-            		<h1 style="font-size: 36px;color: #181e8c;margin-top:0px"><b>QTZ <?php echo $meta_ingreso?>M</b></h1>
-            		<h1 style="font-size: 36px;color: #2f8c18;margin-top:0px"><b>QTZ <?php echo $ingreso?>M</b></h1>
-            	</div> -->
+            	<div class="col-md-4" style="padding-left: 0px">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h1 <?php if($porcentaje_iusi <= 61){echo 'style="color: #ff0000; font-size: 50px"';}elseif($porcentaje_iusi >=62 && $porcentaje_iusi <= 79){echo 'style="color: #ff5100; font-size: 50px"';}else{echo 'style="color: #2f8c18; font-size: 50px"';}?>><b><?php echo $porcentaje_iusi?>%</b></h1>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                          <h1 style="font-size: 36px;color: #2f8c18;margin-top:0px"><b>QTZ <?php echo $ingreso?>M</b></h1>
+                      </div>
+                    </div>
+                  </div>
+                 
+            	</div>
 
-              <div class="col-md-5" style="padding-left: 0px">
+              <!-- <div class="col-md-5" style="padding-left: 0px">
 
                 <h1 style="font-size: 36px;color: #2f8c18;margin-top:0px"><b><small>2022</small> QTZ 183M</b></h1>
             		<h1 style="font-size: 36px;color: #181e8c;margin-top:0px"><b><small>2021</small> QTZ 163M</b></h1>
             		
-            	</div>
+            	</div> -->
 
               <!-- <div class="col-md-4" style="padding-left: 0px">
               </div> -->
